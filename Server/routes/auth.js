@@ -1,5 +1,5 @@
 const express = require('express')
-const { register,handleFileUpload } = require('../controllers/auth')
+const { register,handleFileUpload , signIn , signOut} = require('../controllers/auth')
 const router = express.Router()
 const multer = require('multer');
 const path = require('path');
@@ -35,6 +35,8 @@ router.get('/', function (req, res) {
   })
 
   router.post('/', uploadPDF.single("file"), register);
+  router.post('/signIn',signIn );
+  router.post('/signOut',signOut);
 
 
 module.exports = router;
