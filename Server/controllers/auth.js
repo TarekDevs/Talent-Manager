@@ -13,11 +13,10 @@ exports.register = async (req, res) => {
     const newuser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      phone: req.body.phone,
+      // phone: req.body.phone,
       email: req.body.email,
       password:hash,
-      //cv: req.file.path, 
-    });
+      cv: req.file.path    });
 
 
     const userExists = await User.findOne({ email: req.body.email });

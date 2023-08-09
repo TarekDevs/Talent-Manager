@@ -30,9 +30,7 @@ function pdfFileFilter(req, file, cb) {
   cb(new Error('Only PDF files are allowed.'));
 }
 
-router.get('/', function (req, res) {
-    res.send('Hello World')
-  })
+
 
   router.post('/', uploadPDF.single("file"), register);
   router.post('/signIn',signIn );

@@ -12,7 +12,6 @@ const Role = require("./models/role");
 // import routes
 const authroute = require('./routes/auth');
 
-
 const connect = async () => {
     try {
       await mongoose.connect(process.env.DATABASE);
