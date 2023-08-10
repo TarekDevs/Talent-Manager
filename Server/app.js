@@ -6,6 +6,8 @@ require('dotenv').config()
 const cors = require('cors')
 const passport = require("passport");
 const morgan = require('morgan')
+const path = require('path');
+const { spawn } = require('child_process');
 
 const Role = require("./models/role");
 
@@ -41,6 +43,43 @@ app.listen(port,()=>{
     connect();
     console.log("running");
 });
+
+// Define the path to the recommendation script
+const scriptPath = path.join(__dirname, "simplyhired/careerPlan.py");
+
+app.post("/careerPlanRecommendation", (req, res) => {
+  // User input (company goals, user skills, and user ID)
+  const { companyGoals, userSkills } = req.body;
+  console.log(companyGoals,userSkills);
+  // Construct the list of arguments for the Python script
+  const args = [JSON.stringify(companyGoals), JSON.stringify(userSkills)];
+console.log(args);
+  // Path to the Python interpreter
+
+const pythonInterpreter = path.join(
+  __dirname,
+ "simplyhired",
+  "venv",
+  "Scripts",
+  "python.exe"
+); 
+
+  // Call the Python script with the provided arguments
+  const pyProg = spawn(pythonInterpreter, [scriptPath, ...args]);
+
+  // Handle the script's output
+  pyProg.stdout.on("data", (data) => {
+    const recommendations = JSON.parse(data.toString());
+    res.status(200).json(recommendations);
+  });
+
+  // Handle errors
+  pyProg.stderr.on("data", (data) => {
+    console.error(`Error in Python script: ${data}`);
+    res.status(500).send("An error occurred while processing the recommendation.");
+  });
+});
+
 
 // Import Roles
 
