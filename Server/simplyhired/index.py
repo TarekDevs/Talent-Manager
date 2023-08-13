@@ -1,4 +1,4 @@
-import cloudscraper
+# import cloudscraper
 from bs4 import BeautifulSoup
 import time
 import requests
@@ -16,25 +16,21 @@ def extract(page):
 def extract_qualifications_from_description(description):
     qualifications = []
 
-    # List of specific qualifications to extract
-    specific_qualifications = [
-        'javascript', 'linux', 'php', 'json', 'nodejs', 'mongodb', 'apache',
-        'laravel', 'unix', 'sql', 'c#', 'mvc', 'computer science',
-        'Angular', 'REST', 'Web services', 'IBM iSeries', 'RPG', 'PL',
-        'software development', 'iOS', 'Java', 'Computer Science', 'jQuery',
-        '.NET', 'HTML5', 'C#', 'Software troubleshooting', 'Communication skills','Nodejs','React','Python','MySQL','UI design','Full-stack development','Databases'
+    # Define patterns for common qualifications
+    qualification_patterns = [
+        r'(bachelor\'?s|master\'?s|ph\.?d\.?|doctorate) degree',
+        r'(\d+[\+\-]?) years? of experience',
+        r'(\d+[\+\-]?) years? experience',
+        r'(\d+[\+\-]?) years? related experience',
+        r'experience with [A-Za-z0-9,\- ]+',
+        r'expert with [A-Za-z0-9,\- ]+',
     ]
 
-    # Create a pattern to match any of the specific qualifications
-    pattern = r'\b(?:' + '|'.join(specific_qualifications) + r')\b'
-
-    matches = re.findall(pattern, description, re.IGNORECASE)
-    
-    # Remove duplicates by converting the list to a set and back to a list
-    qualifications.extend(list(set(matches)))
+    for pattern in qualification_patterns:
+        matches = re.findall(pattern, description, re.IGNORECASE)
+        qualifications.extend(matches)
 
     return qualifications
-
 
 def extract_job_details(job_url):
     scraper = cloudscraper.create_scraper()
