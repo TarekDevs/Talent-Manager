@@ -50,18 +50,29 @@ function Basic() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    
+
+    try {
       const response = await axios.post("http://localhost:8000/api/auth/signIn", {
         email: email,
         password: password,
-      }).then((res) => {
-        console.log(res);
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      });
+
+      const { data } = response;
+
+      if (data.success) {
+        // Store user ID in local storage
+        localStorage.setItem('userId', data.user.id);
+
+        // Navigate to the dashboard
+        navigate("/profile");
+      } else {
+        console.log(data.message); // Handle error messages
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
+
   return (
     <BasicLayout image={bgImage}>
       <Card>

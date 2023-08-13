@@ -32,6 +32,7 @@ function pdfFileFilter(req, file, cb) {
 
 
 
+
   router.post('/', uploadPDF.single("file"), register);
   router.post('/signIn',signIn );
   router.post('/signOut',signOut);
