@@ -3,6 +3,9 @@ const Role = require('../models/role');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const pdf = require('pdf-parse');
+const skillsKeywords = ['JavaScript', 'React', 'Node.js', 'MongoDB'];
+const experienceKeywords = ['Work Experience', 'Job History', 'Professional Experience'];
 
 exports.register = async (req, res) => {
   try {
@@ -15,9 +18,11 @@ exports.register = async (req, res) => {
       lastName: req.body.lastName,
       phone: req.body.phone,
       email: req.body.email,
-      password:hash,
-      cv: req.file.path    });
-
+      password: hash,
+      cv: req.file.path,
+      skills: extractedSkills,
+      experiences: extractedExperiences,
+    });
 
     const userExists = await User.findOne({ email: req.body.email });
 
