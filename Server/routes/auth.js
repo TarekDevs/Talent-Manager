@@ -3,7 +3,7 @@ const { register,handleFileUpload , signIn , signOut} = require('../controllers/
 const router = express.Router()
 const multer = require('multer');
 const path = require('path');
-
+/* 
 const pdfStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '../pdf'));
@@ -29,11 +29,11 @@ function pdfFileFilter(req, file, cb) {
   }
   cb(new Error('Only PDF files are allowed.'));
 }
+ */
 
+const upload = multer();
 
-
-
-  router.post('/', uploadPDF.single("file"), register);
+  router.post('/', upload.single("file"), register);
   router.post('/signIn',signIn );
   router.post('/signOut',signOut);
 
