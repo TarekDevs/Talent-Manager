@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
         trim: true,
   
       },
+
       
       lastName: {
         type: String,
@@ -35,7 +36,10 @@ const userSchema = new mongoose.Schema(
 
      
       profilePicture: { type: String },
-  
+
+      ProfileInformation :{ type: String },
+
+      location :{ type: String },
 
       cv: {
         type: String,

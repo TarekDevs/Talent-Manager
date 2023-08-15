@@ -50,6 +50,8 @@ function Header({ children }) {
         : setTabsOrientation("horizontal");
     }
 
+
+    
     /** 
      The event listener that's calling the handleTabsOrientation function when resizing the window.
     */
@@ -63,6 +65,39 @@ function Header({ children }) {
   }, [tabsOrientation]);
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+  const id = localStorage.getItem('userId');
+
+
+  const [user,setUser]= useState(null);
+
+
+  const getUser = async()=>{
+    const response = await fetch (`http://localhost:8000/api/users/getuser/${id}` , {
+    method:"GET",
+
+    });
+
+    const data = await response.json();
+    setUser(data);
+};
+
+
+useEffect(()=>{
+    getUser();
+},[]);
+
+
+if(!user) return null ;
+
+
+const{
+  firstName,
+  lastName,
+ 
+}=user;
+
+
 
   return (
     <MDBox position="relative" mb={5}>
@@ -99,10 +134,9 @@ function Header({ children }) {
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                Richard Davis
+                {firstName} {lastName}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
               </MDTypography>
             </MDBox>
           </Grid>

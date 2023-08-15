@@ -13,7 +13,7 @@ const Role = require("./models/role");
 
 // import routes
 const authroute = require('./routes/auth');
-
+const userroute= require('./routes/user')
 const connect = async () => {
     try {
       await mongoose.connect(process.env.DATABASE);
@@ -34,8 +34,22 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('dev'))
 
+
+
+app.use('/pdf', express.static(path.join(__dirname, 'pdf')));
+
+
+
 // ROUTES MIDDELWARE
 app.use("/api/auth",authroute);
+app.use("/api/users",userroute);
+
+app.get('/api/users/cv/:filename', (req, res) => {
+  const cvPath = path.resolve(__dirname, '../pdf', decodeURIComponent(req.params.filename));
+  res.setHeader('Content-Disposition', `attachment; filename="${req.params.filename}"`);
+
+  res.sendFile(cvPath);
+});
 
 const port = process.env.PORT || 7000; 
 

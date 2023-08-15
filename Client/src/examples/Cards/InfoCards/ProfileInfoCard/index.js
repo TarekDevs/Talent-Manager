@@ -32,13 +32,18 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
-
-function ProfileInfoCard({ title, description, info, social, action, shadow }) {
+import { Edit as EditIcon } from '@mui/icons-material'; 
+import {
+  IconButton,
+  
+} from "@mui/material";
+function ProfileInfoCard({ title, user, info, social, action, shadow,handleOpen }) {
   const labels = [];
   const values = [];
   const { socialMediaColors } = colors;
   const { size } = typography;
 
+  
   // Convert this form `objectKey` of the object key in to this `object key`
   Object.keys(info).forEach((el) => {
     if (el.match(/[A-Z\s]+/)) {
@@ -91,15 +96,19 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
           {title}
         </MDTypography>
         <MDTypography component={Link} to={action.route} variant="body2" color="secondary">
-          <Tooltip title={action.tooltip} placement="top">
-            <Icon>edit</Icon>
-          </Tooltip>
+        <Tooltip title={action.tooltip} placement="top">
+        <IconButton variant="body2" color="secondary" onClick={handleOpen} style={{ fontSize: '20px' }}>
+         <EditIcon style={{ fontSize: '14px' }} />
+         </IconButton>
+
+        </Tooltip>
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
         <MDBox mb={2} lineHeight={1}>
           <MDTypography variant="button" color="text" fontWeight="light">
-            {description}
+            {user.ProfileInformation}
+
           </MDTypography>
         </MDBox>
         <MDBox opacity={0.3}>
@@ -127,7 +136,7 @@ ProfileInfoCard.defaultProps = {
 // Typechecking props for the ProfileInfoCard
 ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
   social: PropTypes.arrayOf(PropTypes.object).isRequired,
   action: PropTypes.shape({
@@ -135,6 +144,7 @@ ProfileInfoCard.propTypes = {
     tooltip: PropTypes.string.isRequired,
   }).isRequired,
   shadow: PropTypes.bool,
+  handleOpen: PropTypes.func.isRequired, // Add this line for the handleOpen function
 };
 
 export default ProfileInfoCard;
