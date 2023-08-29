@@ -14,6 +14,8 @@ const Role = require("./models/role");
 // import routes
 const authroute = require('./routes/auth');
 const userroute= require('./routes/user')
+const formationroute= require('./routes/formation')
+
 const connect = async () => {
     try {
       await mongoose.connect(process.env.DATABASE);
@@ -40,10 +42,17 @@ app.use('/pdf', express.static(path.join(__dirname, 'pdf')));
 
 
 
+
+
+
 // ROUTES MIDDELWARE
 app.use("/api/auth",authroute);
 app.use("/api/users",userroute);
+app.use("/api/formation",formationroute);
 
+
+
+//for downloading files
 app.get('/api/users/cv/:filename', (req, res) => {
   const cvPath = path.resolve(__dirname, '../pdf', decodeURIComponent(req.params.filename));
   res.setHeader('Content-Disposition', `attachment; filename="${req.params.filename}"`);
@@ -51,6 +60,14 @@ app.get('/api/users/cv/:filename', (req, res) => {
   res.sendFile(cvPath);
 });
 
+app.get('/api/formation/course/:filename', (req, res) => {
+  const coursePath = path.resolve(__dirname, '../pdf', decodeURIComponent(req.params.filename));
+  res.setHeader('Content-Disposition', `attachment; filename="${req.params.filename}"`);
+
+  res.sendFile(coursePath);
+});
+
+//
 const port = process.env.PORT || 7000; 
 
 app.listen(port,()=>{

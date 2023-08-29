@@ -6,7 +6,6 @@ const pdfjsLib = require('pdfjs-dist');
 const pdfParse = require('pdf-parse'); // Import the pdf-parse library
 const skillsKeywords = ['languges'];
 
-
 exports.register = async (req, res) => {
   try {
     const salt = bcrypt.genSaltSync(10);
@@ -17,25 +16,38 @@ exports.register = async (req, res) => {
     const pdfText = await pdfParse(pdfBuffer);
     const textContent = pdfText.text;
 
-    const skillsKeywords = ['Compétences', 'Skills','données'];
+    const skillsKeywords = ['Compétences', 'Skills'];
     const skillsSectionStart = skillsKeywords.find(keyword => textContent.includes(keyword));
-    let skillsLines = []; // Define the variable outside of the if block
+    let skillsArray = [];
 
     if (skillsSectionStart) {
-      const startIndex = textContent.indexOf(skillsSectionStart);
-      const endIndex = textContent.indexOf(skillsSectionStart)+400; // Assuming 'Langues' indicates the end of skills section
-  const skillsText = textContent.slice(startIndex, endIndex);
+      // Extract the first 200 words from the CV text
+      const maxWords = 200;
+      const cvText = textContent.split(/\s+/).slice(0, maxWords).join(' ');
+
+      const startIndex = cvText.indexOf(skillsSectionStart);
+      const endIndex = cvText.indexOf('Langues', startIndex); // Assuming 'Langues' indicates the end of skills section
+      const skillsText = cvText.slice(startIndex, endIndex);
 
       // Split skillsText into lines
       const lines = skillsText.split('\n');
 
       // Filter out empty lines and keywords
-      skillsLines = lines
+      skillsArray = lines
         .map(line => line.trim())
-        .filter(line => line && !skillsKeywords.includes(line));
+        .filter(line => line && !skillsKeywords.includes(line))
+        .map(skillLine => {
+          const [name, status] = skillLine.split('('); // Split by '(' to get name and status
+          const skillName = name.trim();
+          const skillStatus = status ? status.replace(')', '').trim() : 'Beginner'; // Default to 'Beginner' if no status
+          return { name: skillName, status: skillStatus };
+        });
     }
 
- console.log(skillsLines);
+    console.log(skillsArray);
+
+    
+ 
     const extractedExperiences = [];
 
 
@@ -75,7 +87,8 @@ exports.register = async (req, res) => {
       email: req.body.email,
       password: hash,
       cv: req.file.path,
-      skills: skillsLines,
+      skills: skillsArray, // Save the skills array
+      profilePicture:req.body.profilePicture,
       experiences: extractedExperiences,
     });
 

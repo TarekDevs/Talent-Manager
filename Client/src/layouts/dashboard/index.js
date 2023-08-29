@@ -30,10 +30,12 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
+import Reportspiechart from "examples/Charts/Reportspiechart"
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import FormationStatistics from "./components/FormationStatistics";
+import { line } from "stylis";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -104,34 +106,33 @@ function Dashboard() {
           </Grid>
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{marginLeft:"200px"}}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  title="Valid formations "
+                  description="Valid formations per month "
+                  date=" sent 2 days ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
             </Grid>
+
+
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
+              <Reportspiechart
+               color="secondary"
+              title="Skill's Status"
+    description={<>Percentage of skills for each status</>}
+    date="updated 4 min ago"
+  />
+
+
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
@@ -141,17 +142,17 @@ function Dashboard() {
                   chart={tasks}
                 />
               </MDBox>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+            <Grid item xs={12} md={6} lg={8}  style={{marginLeft:"220px"}}>
               <Projects />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>

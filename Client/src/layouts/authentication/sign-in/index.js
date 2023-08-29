@@ -62,6 +62,7 @@ function Basic() {
       if (data.success) {
         // Store user ID in local storage
         localStorage.setItem('userId', data.user.id);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
         // Navigate to the dashboard
         navigate("/profile");

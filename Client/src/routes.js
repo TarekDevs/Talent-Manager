@@ -39,8 +39,8 @@ Coded by www.creative-tim.com
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
+import Formation from "layouts/formation"
 import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -62,33 +62,44 @@ const routes = [
     name: "Tables",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    route: "/skills",
     component: <Tables />,
   },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Quiz",
+  //   key: "billing",
+  //   icon: <Icon fontSize="small">quiz</Icon>,
+  //   route: "/quiz",
+  //   component: <Billing />,
+  // },
+ 
+  // {
+  //   type: "collapse",
+  //   name: "Quizz",
+  //   key: "quiz",
+  //   icon: <Icon fontSize="small">quiz react</Icon>,
+  //   route: "/quizreact",
+  //   component: <Quiz />,
+  // },
+
+
+  // {
+  //   type: "collapse",
+  //   name: "RTL",
+  //   key: "rtl",
+  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+  //   route: "/rtl",
+  //   component: <RTL />,
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Notifications",
+  //   key: "notifications",
+  //   icon: <Icon fontSize="small">notifications</Icon>,
+  //   route: "/quizz",
+  //   component: <Notifications />,
+  // },
   {
     type: "collapse",
     name: "Profile",
@@ -96,6 +107,14 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
+  },
+  {
+    type: "collapse",
+    name: "formation",
+    key: "formation",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/formation",
+    component: <Formation />,
   },
   {
     type: "collapse",
@@ -113,6 +132,7 @@ const routes = [
     route: "/authentication/sign-up",
     component: <SignUp />,
   },
+ 
 ];
 
 export default routes;

@@ -20,158 +20,154 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
-
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material"; // Add necessary imports
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { useState,useEffect } from "react";
+import axios from "axios";
+import FormationList from "./FormationList";
 
 export default function data() {
-  const Author = ({ image, name, email }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDBox ml={2} lineHeight={1}>
+
+
+  const id = localStorage.getItem('userId');
+  const [user, setUser] = useState({});
+  const [skills, setSkills] = useState([]);
+  const [row, setRows] = useState([]); // Define the state variable
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+        const data = await response.json();
+        setUser(data);
+        setSkills(data.skills);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    getUser();
+  }, [id]);
+  const handleFormationSelect = async (formationId, rowIndex, formationTitle) => {
+    try {
+      await axios.put(`http://localhost:8000/api/formation/addFormationTitle/${id}`, {
+        skillIndex: rowIndex,
+        formationTitle: formationTitle,
+      });
+  
+      await axios.put(`http://localhost:8000/api/formation/postformation/${id}`, {
+        formationIds: [formationId],
+      });
+  
+      const updatedRows = [...data];
+      updatedRows[rowIndex].formationId = formationId;
+  
+      setRows(updatedRows);
+    } catch (error) {
+      console.error("Error adding formation:", error);
+    }
+  };
+  
+   
+  
+
+  const Skill = ({ name, status, skillId,  }) => {
+    const [selectedStatus, setSelectedStatus] = useState(status);
+  
+    const updateStatus = async (newStatus) => {
+      try {
+        await axios.put(`http://localhost:8000/api/users/updateStatus/${id}/${skillId}`, {
+          newStatus: newStatus,
+        });
+  
+        setSelectedStatus(newStatus);
+      } catch (error) {
+        console.error("Error updating skill status:", error);
+      }
+    };
+
+
+
+
+  
+    return (
+      <MDBox display="flex" alignItems="center" lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
         </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
-      </MDBox>
-    </MDBox>
-  );
+        <MDBox ml={2}>
+          <FormControl>
+            <Select
+              value={selectedStatus}
+              onChange={(event) => {
+                const newStatus = event.target.value;
+                updateStatus(newStatus); 
+              }}
+            >
+              <MenuItem value="Beginner">Beginner</MenuItem>
+              <MenuItem value="Intermediate">Intermediate</MenuItem>
+              <MenuItem value="Advanced">Advanced</MenuItem>
+            </Select>
+          </FormControl></MDBox>
+    
 
-  const Job = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
-
-  return {
-    columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
-    ],
-
-    rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            11/01/19
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        function: <Job title="Executive" description="Projects" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            19/09/17
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            24/12/08
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        function: <Job title="Manager" description="Executive" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            04/10/21
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            14/09/20
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-    ],
+        </MDBox>
+    );
   };
-}
+  
+  const columns = [
+    { name: 'Skill Name', selector: 'name', sortable: true },
+    {
+      name: 'Status',
+      selector: 'status',
+      sortable: true,
+      cell: (row) => row.status, 
+    },
+     {
+      name: 'formation',
+      selector: 'formation',
+      sortable: true,
+    },
+  ];
+  const data = skills.map((skill, index) => ({
+    id: index,
+    name: skill.name,
+    status: (
+      <Skill
+        key={index}
+        
+        status={skill.status}
+        skillId={skill._id}
+       
+      />
+    ),
+    formation: (
+      
+<FormationList
+  initialSelectedFormationTitle={user.skills.formationTitle}
+  onSelectFormation={(formationId, formationTitle) =>
+    handleFormationSelect(formationId, index, formationTitle)
+  }
+/>
+
+    ),
+  }));
+  
+
+ 
+ 
+    return {
+      columns,rows:data}
+    
+  
+  };
+
+ 

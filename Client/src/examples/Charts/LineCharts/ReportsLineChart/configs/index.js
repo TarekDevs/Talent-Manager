@@ -21,15 +21,12 @@ function configs(labels, datasets) {
         {
           label: datasets.label,
           tension: 0,
-          pointRadius: 5,
-          pointBorderColor: "transparent",
+         
           pointBackgroundColor: "rgba(255, 255, 255, .8)",
           borderColor: "rgba(255, 255, 255, .8)",
           borderWidth: 4,
-          backgroundColor: "transparent",
           fill: true,
-          data: datasets.data,
-          maxBarThickness: 6,
+          data: datasets.chartValues,
         },
       ],
     },
