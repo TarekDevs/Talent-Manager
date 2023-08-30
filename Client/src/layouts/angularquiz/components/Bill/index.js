@@ -37,6 +37,8 @@ function Bill({  }) {
   const id = localStorage.getItem('userId');
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const location = useLocation();
+  const [timer, setTimer] = useState(30); // Initial timer value in seconds
+  const [timerRunning, setTimerRunning] = useState(true);
 
   const formationId = location.pathname.split('/').pop(); // Extract the formation ID from the URL path
 
@@ -87,7 +89,24 @@ function Bill({  }) {
 
   const [formationUpdated, setFormationUpdated] = useState(false);
   const [user,setUser]= useState(null);  
+ useEffect(() => {
+    let interval;
 
+    if (timerRunning && timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    }
+
+    if (timer === 0) {
+      setShowScore(true);
+      setTimerRunning(false);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer, timerRunning]);
 
 
 	
@@ -101,6 +120,8 @@ function Bill({  }) {
 		  setCurrentQuestion(nextQuestion);
 		} else {
 		  setShowScore(true);
+		  setTimerRunning(false); // Stop the timer when all questions are answered
+
 		}
 	  };
 
@@ -184,8 +205,12 @@ function Bill({  }) {
         <div className='question-count'>
           <span>Question {currentQuestion + 1}</span>/{questions.length}
         </div>
-        <div className='question-text'>{questions[currentQuestion].questionText}</div>
+        <div className='question-text'>{questions[currentQuestion].questionText}</div> 
+		<div style={{marginTop:"190px"}}>
+        <span>Time Left: {timer} seconds</span>
       </div>
+      </div>
+	 
       <div className='answer-section' style={{ marginLeft: '25px' , }}>
         {questions[currentQuestion].answerOptions.map((answerOption, index) => (
           <button

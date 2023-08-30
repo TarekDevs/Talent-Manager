@@ -1,19 +1,23 @@
 const User = require('../models/User');
-
-
+const Formation=require('../models/Formation')
 exports.getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id).populate('formations.formation').populate({
-      path: 'formations.formation',
-      select: 'image label title desc link',
-    }); // Populate the 'formations' field with Formation documents
+    const user = await User.findById(id)
+      .populate('formations.formation')
+      .populate({
+        path: 'formations.formation',
+        select: 'image label title desc link',
+      })
+      .populate({
+        path: 'skills.formationId',
+        select: 'image label title desc link valid',
+      }); 
     res.status(200).json(user);
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
 }
-
 
 
 
@@ -35,8 +39,8 @@ exports.getUser = async (req, res) => {
 
   exports.updateFormationStatus = async (req, res) => {
     try {
-      const userId = req.body.userId; // Corrected here
-      const formationId = req.params.id; // Corrected here
+      const userId = req.body.userId;
+      const formationId = req.params.id;
   
       const user = await User.findById(userId);
   
@@ -56,6 +60,10 @@ exports.getUser = async (req, res) => {
         formationToUpdate.valid = true;
         formationToUpdate.createdAt = new Date(); // Set the current timestamp
         await user.save();
+  
+        // Update the corresponding Formation document's valid field
+        await Formation.findByIdAndUpdate(formationId, { valid: true });
+  
         return res.status(200).json({ message: 'Formation status updated and timestamp added' });
       } else {
         return res.status(400).json({ error: 'Formation is already marked as valid' });

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { VictoryPie, VictoryLegend,VictoryTooltip  } from 'victory';
 import CustomLegend from './CustomLegend';
+import CircularProgress from "@mui/material/CircularProgress";
 
 function SkillStatistics() {
   const [statistics, setStatistics] = useState(null);
@@ -21,13 +22,14 @@ function SkillStatistics() {
   }, []);
 
   if (!statistics) {
-    return <div>Loading...</div>;
+    return <CircularProgress  style={{marginLeft:"220px",marginTop:'75px'}}/>; // Display the loading icon
   }
+  
 
   const colorMap = {
     Beginner: '#97b1d5',
-    Intermediate: '#414d5d',
-    Advanced: '#7d0d33',
+    Intermediate: 'rgb(121 142 171)',
+    Advanced: 'rgb(201 84 124)',
   };
 
   const data = [
@@ -46,6 +48,7 @@ function SkillStatistics() {
         width={320} 
         height={300}
         data={data}
+        style={{borderColor:'rgba(255, 255, 255, .2)'}}
 
         colorScale={Object.values(colorMap)}
         labelRadius={({ innerRadius }) => innerRadius + 30}

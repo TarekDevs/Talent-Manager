@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-
+import CombinedChart from "../../layouts/dashboard/components/mostauthors"
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 
@@ -24,6 +24,8 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
+import ReportsBarChartt from "examples/Charts/BarCharts/ReportsBarChartt";
+
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
@@ -45,7 +47,7 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
@@ -59,8 +61,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
@@ -73,8 +75,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
@@ -88,8 +90,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
@@ -103,10 +105,10 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
+          </Grid> */}
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3} style={{marginLeft:"200px"}}>
+          <Grid container spacing={3} style={{marginRight:"10px"}}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
@@ -119,17 +121,27 @@ function Dashboard() {
               </MDBox>
             </Grid>
 
+            
+
 
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
               <Reportspiechart
-               color="secondary"
+               color="info"
               title="Skill's Status"
     description={<>Percentage of skills for each status</>}
     date="updated 4 min ago"
   />
 
 
+              </MDBox>
+            </Grid>
+            
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <CombinedChart
+                
+                />
               </MDBox>
             </Grid>
             {/* <Grid item xs={12} md={6} lg={4}>

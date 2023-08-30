@@ -20,6 +20,8 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
+import Chip from "@mui/material/Chip";
+
 import {
   FormControl,
   InputLabel,
@@ -56,21 +58,22 @@ export default function data() {
 
     getUser();
   }, [id]);
-  const handleFormationSelect = async (formationId, rowIndex, formationTitle) => {
+
+
+  const handleFormationSelect = async (skillIndex, formationId, formationTitle) => {
     try {
-      await axios.put(`http://localhost:8000/api/formation/addFormationTitle/${id}`, {
-        skillIndex: rowIndex,
-        formationTitle: formationTitle,
+      await axios.put(`http://localhost:8000/api/formation/addFormationId/${id}`, {
+        skillIndex: skillIndex,
+        formationId: formationId,
       });
   
       await axios.put(`http://localhost:8000/api/formation/postformation/${id}`, {
         formationIds: [formationId],
       });
   
-      const updatedRows = [...data];
-      updatedRows[rowIndex].formationId = formationId;
-  
-      setRows(updatedRows);
+      const updatedSkills = [...skills];
+      updatedSkills[skillIndex].formationId = { title: formationTitle, valid: true };
+      setSkills(updatedSkills); // This will trigger a re-render
     } catch (error) {
       console.error("Error adding formation:", error);
     }
@@ -136,31 +139,57 @@ export default function data() {
       selector: 'formation',
       sortable: true,
     },
-  ];
-  const data = skills.map((skill, index) => ({
-    id: index,
-    name: skill.name,
-    status: (
-      <Skill
-        key={index}
-        
-        status={skill.status}
-        skillId={skill._id}
-       
-      />
-    ),
-    formation: (
-      
-<FormationList
-  initialSelectedFormationTitle={user.skills.formationTitle}
-  onSelectFormation={(formationId, formationTitle) =>
-    handleFormationSelect(formationId, index, formationTitle)
-  }
-/>
-
-    ),
-  }));
+     {
+    name: 'Ongoing formation ',
+    selector: 'formationTitle',
+    sortable: true,
+    
+    
+  },
+  {
+    name: 'Formation Status',
+    selector: 'formationstatus',
+    sortable: true,
+   
+    
+  },
   
+  ];
+
+const data = skills.map((skill, index) => ({
+  id: index,
+  name: skill.name,
+  status: (
+    <Skill
+      key={index}
+      status={skill.status}
+      skillId={skill._id}
+    />
+  ),
+  formation: (
+    <FormationList
+    initialSelectedFormationTitle={skill.formationTitle}
+    onSelectFormation={(skillIndex, formationId, formationTitle) =>
+      handleFormationSelect(skillIndex, formationId, formationTitle)
+    }
+    handleFormationSelect={handleFormationSelect}
+  />
+  
+  ),
+  formationTitle: skill.formationId?.title,
+  formationstatus: (
+    <div>
+      {skill.formationId?.title && (
+        <Chip
+          label={skill.formationId?.valid ? "Valid" : "In Progress"}
+          color={skill.formationId?.valid ? "info" : "secondary"}
+        />
+      )}
+    </div>
+  ),
+}));
+
+
 
  
  

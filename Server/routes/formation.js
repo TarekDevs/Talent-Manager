@@ -45,10 +45,10 @@ router.put(`/postformation/:id`, addFormationsToUser);
 
 router.get('/getallform', getformation);
 
-router.put("/addFormationTitle/:id", async (req, res) => {
+router.put("/addFormationId/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { skillIndex, formationTitle } = req.body;
+    const { skillIndex, formationId } = req.body;
 
     const user = await User.findById(id)
 
@@ -56,15 +56,19 @@ router.put("/addFormationTitle/:id", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    user.skills[skillIndex].formationTitle = formationTitle;
+    user.skills[skillIndex].formationId = formationId; // Update formationId
     await user.save();
+    console.log("Received formationId:", formationId);
 
-    return res.status(200).json({ message: "Formation title added to skill" });
+    return res.status(200).json({ message: "Formation ID added to skill" });
+
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Server error" });
+
   }
 });
+
 
 
 

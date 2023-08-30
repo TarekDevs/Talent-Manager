@@ -67,7 +67,10 @@ const userSchema = new mongoose.Schema(
       {
         name: { type: String },
         status: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
-        formationTitle: { type: String }, 
+        formationId: {type: mongoose.Schema.Types.ObjectId,
+          ref: 'Formation',
+
+        }, 
       }
     ]
 ,    

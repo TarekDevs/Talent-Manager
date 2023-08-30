@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
+import CircularProgress from "@mui/material/CircularProgress";
 
 function FormationStatistics() {
   const [chartData, setChartData] = useState(null);
@@ -24,9 +25,11 @@ function FormationStatistics() {
   ];
 
   if (!chartData) {
-    return <div>Loading...</div>;
+    return <CircularProgress  style={{marginLeft:"220px",marginTop:'75px'}}/>; // Display the loading icon
   }
 
+ 
+  
   const chartDataWithMissingMonths = months.map((month, index) => {
     const entry = chartData.find(data => data._id === index + 1);
     return {

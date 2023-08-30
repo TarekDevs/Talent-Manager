@@ -2,11 +2,24 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FormControl, Select, MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
-
-function FormationList({ onSelectFormation, initialSelectedFormationTitle }) {
+import MDTypography from "components/MDTypography";
+function FormationList({ onSelectFormation, initialSelectedFormationTitle,handleFormationSelect   }) {
   const [formations, setFormations] = useState([]);
+  const [skills,setSkills]= useState([]);
   const id = localStorage.getItem('userId');
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+        const data = await response.json();
+        setSkills(data.skills);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
 
+    getUser();
+  }, [id]);
   const getFormations = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/formation/getallform");
@@ -20,21 +33,23 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle }) {
   useEffect(() => {
     getFormations();
   }, []);
+  const [selectedSkillIndex, setSelectedSkillIndex] = useState(0); 
 
   const [selectedFormationTitle, setSelectedFormationTitle] = useState(
     initialSelectedFormationTitle || ""
   );
-
   const handleFormationChange = (event) => {
     const selectedTitle = event.target.value;
     setSelectedFormationTitle(selectedTitle);
 
+    const selectedSkill = skills[selectedSkillIndex]; 
     const selectedId = formations.find(
       (formation) => formation.title === selectedTitle
     )?._id || "";
 
-    onSelectFormation(selectedId, selectedTitle);
+    onSelectFormation(selectedSkillIndex, selectedId, selectedTitle); 
   };
+
 
   return (
     <FormControl variant="outlined" fullWidth>
@@ -59,6 +74,11 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle }) {
       </MenuItem>
     ))}
   </Select>
+  {/* {skills.map((i)=>(
+  <MDTypography display="block" variant="button" fontWeight="medium"        key={i._id}
+  >
+{i.formationTitle}
+        </MDTypography>))} */}
 </FormControl>
 
 
@@ -66,8 +86,9 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle }) {
 }
 
 FormationList.propTypes = {
-  initialSelectedFormationTitle: PropTypes.string, // Define prop type
+  initialSelectedFormationTitle: PropTypes.string,
   onSelectFormation: PropTypes.func.isRequired,
+  handleFormationSelect: PropTypes.func.isRequired, // Add this prop type
 };
 
 export default FormationList;

@@ -41,11 +41,10 @@ import MDTypography from "components/MDTypography";
 
 // ReportsBarChart configurations
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
-import FormationStatistics from "layouts/dashboard/components/FormationStatistics";
-import SkillStatistics from "layouts/dashboard/components/SkillStatistics";
+import FormationWithMostAuthorsChart from "layouts/dashboard/components/mostauthors";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function Reportspiechart({ color, title, description, date }) {
+function ReportsBarChart({ color, title, description, date }) {
 
   return (
     <Card sx={{ height: "100%" }}>
@@ -53,7 +52,7 @@ function Reportspiechart({ color, title, description, date }) {
         
             <MDBox
               variant="gradient"
-              bgColor={"white"}
+              bgColor={color}
               borderRadius="lg"
               coloredShadow={color}
               py={2}
@@ -61,7 +60,7 @@ function Reportspiechart({ color, title, description, date }) {
               mt={-5}
               height="15.5rem"
             >
-              <SkillStatistics  />
+              <FormationWithMostAuthorsChart/>
             </MDBox>
         
         <MDBox pt={3} pb={1} px={1}>
@@ -87,13 +86,13 @@ function Reportspiechart({ color, title, description, date }) {
 }
 
 // Setting default values for the props of ReportsBarChart
-Reportspiechart.defaultProps = {
+ReportsBarChart.defaultProps = {
   color: "info",
   description: "",
 };
 
 // Typechecking props for the ReportsBarChart
-Reportspiechart.propTypes = {
+ReportsBarChart.propTypes = {
   color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
   title: PropTypes.string.isRequired,
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -101,4 +100,4 @@ Reportspiechart.propTypes = {
   chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
 };
 
-export default Reportspiechart;
+export default ReportsBarChart;

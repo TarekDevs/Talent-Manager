@@ -25,6 +25,13 @@ const formationSchema = new mongoose.Schema({
         type: String,
     
       },
+
+      valid: {
+        type: Boolean,
+        default:false,
+    
+      },
+    
     
   authors: [
     {
