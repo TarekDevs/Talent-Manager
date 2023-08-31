@@ -29,7 +29,7 @@ import { Link } from "react-router-dom";
 // Overview page components
 import Header from "layouts/formation/components/Header";
 import axios from 'axios';
-
+import RatingComponent from './components/RatingComponent';
 // Data
 import profilesListData from "layouts/formation/data/profilesListData";
 
@@ -102,6 +102,32 @@ const handleAddFormations = async (formationId) => {
   }
 };
 
+const handleRateFormation = async (formationId, rating) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/api/formation/rate/${formationId}`,
+      { rating }
+    );
+
+    const { averageRating } = response.data;
+
+    // Update the formation state to reflect the new average rating
+    setFormations(prevFormations => {
+      return prevFormations.map(formation => {
+        if (formation._id === formationId) {
+          return {
+            ...formation,
+            averageRating
+          };
+        }
+        return formation;
+      });
+    });
+
+  } catch (error) {
+    console.error("Error rating formation:", error);
+  }
+};
 
 
   return (
@@ -130,6 +156,7 @@ const handleAddFormations = async (formationId) => {
                   label={formations.label}
                   title={formations.title}
                   desc={formations.desc}
+                  
                   description={formations.description}
                   action={{
                     type: 'internal',
@@ -139,6 +166,11 @@ const handleAddFormations = async (formationId) => {
 
                   }}
                 />
+                <RatingComponent
+          formationId={formations._id}
+          averageRating={formations.averageRating}
+          onRate={rating => handleRateFormation(formations._id, rating)}
+        />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                 {formations.authors.some(
                 (liker) =>
@@ -182,6 +214,7 @@ const handleAddFormations = async (formationId) => {
         ))}
       </div>
     </div>
+    
   </Grid>
 ))}
 

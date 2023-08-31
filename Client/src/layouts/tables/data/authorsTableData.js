@@ -73,7 +73,7 @@ export default function data() {
   
       const updatedSkills = [...skills];
       updatedSkills[skillIndex].formationId = { title: formationTitle, valid: true };
-      setSkills(updatedSkills); // This will trigger a re-render
+      setSkills(updatedSkills); 
     } catch (error) {
       console.error("Error adding formation:", error);
     }

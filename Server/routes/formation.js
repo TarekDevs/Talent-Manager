@@ -1,8 +1,8 @@
 const express = require('express')
 const { getUser, UpdateUser } = require('../controllers/User');
 const router = express.Router()
-const Formation=require ('../models/User');
-const { createFormation, getformation ,addFormationsToUser} = require('../controllers/formation');
+const Formation=require ('../models/Formation');
+const { createFormation, getformation ,addFormationsToUser, getformationrating} = require('../controllers/formation');
 
 
 
@@ -70,8 +70,29 @@ router.put("/addFormationId/:id", async (req, res) => {
 });
 
 
+router.post('/rate/:formationId', async (req, res) => {
+  try {
+    const { formationId } = req.params;
+    const { rating } = req.body;
 
+    const formation = await Formation.findById(formationId);
+    if (!formation) {
+      return res.status(404).json({ message: 'Formation not found' });
+    }
 
+    formation.ratings.push(rating);
+    formation.averageRating = formation.ratings.reduce((sum, value) => sum + value, 0) / formation.ratings.length;
+    
+    await formation.save();
+
+    res.json({ message: 'Formation rated successfully', averageRating: formation.averageRating });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error rating formation' });
+  }
+});
+
+router.get ('/api/best-rated-formation',getformationrating)
 
 
 

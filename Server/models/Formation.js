@@ -25,7 +25,19 @@ const formationSchema = new mongoose.Schema({
         type: String,
     
       },
+ 
+      ratings: [{
+        type: Number,
+        min: 1,
+        max: 5,
+      }],
+      
+      averageRating: {
+        type: Number,
+        default: 0,
+      },
 
+      
       valid: {
         type: Boolean,
         default:false,

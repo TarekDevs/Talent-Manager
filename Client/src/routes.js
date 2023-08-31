@@ -44,7 +44,7 @@ import RTL from "layouts/rtl";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-
+import AdminTable from "layouts/Admintable/index"
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -115,6 +115,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/formation",
     component: <Formation />,
+  },
+  {
+    type: "collapse",
+    name: "AdminTable",
+    key: "AdminTable",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/admintable",
+    component: <AdminTable />,
   },
   {
     type: "collapse",

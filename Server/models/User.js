@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema(
         }
     },
     password: { type: String },
+
+    isBanned: {type: Date},
+
     
     formations: [
       {
@@ -54,7 +57,7 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    
+
     
   
 

@@ -32,7 +32,7 @@ function CombinedChart() {
       {
         label: 'Number of Authors',
         data: formations.map(formation => formation.authors.length),
-        color: 'primary', // Choose a color from the VerticalBarChart color options
+        color: 'light', // Choose a color from the VerticalBarChart color options
       },
     ],
   };

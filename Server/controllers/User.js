@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Formation=require('../models/Formation')
+const mongoose = require('mongoose');
+
 exports.getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -142,3 +144,52 @@ exports.getUser = async (req, res) => {
     }
   };
   
+
+
+  exports.banUser = async (req, res) => {
+    const { userID, banDate } = req.body;
+  
+    // Validate if banDate is a valid date
+    if (!banDate || isNaN(new Date(banDate))) {
+      return res
+        .status(400)
+        .send({ success: false, error: "Invalid date format for banDate" });
+    }
+  
+    // check if user exists in the database
+    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userID) });
+    if (!user) {
+      return res.status(404).send({ success: false, error: "User not found" });
+    }
+  
+    // ban user
+    user.isBanned = new Date(banDate);
+    await user.save();
+  
+    res.status(200).json({ success: true, message: "User has been banned" });
+  };
+  
+
+
+  exports.unbanUser = async (req, res) => {
+    const { userID } = req.body;
+  
+    // check if user exists in the database
+    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userID) });
+    if (!user) {
+      return res.status(404).send({ success: false, error: "User not found" });
+    }
+  
+    // check if user is already unbanned
+    if (user.isBanned == null || user.isBanned < new Date()) {
+      return res
+        .status(400)
+        .send({ success: false, error: "User is already unbanned" });
+    }
+  
+    // unban user
+    user.isBanned = null;
+    await user.save();
+  
+    res.status(200).json({ success: true, message: "User has been unbanned" });
+  };

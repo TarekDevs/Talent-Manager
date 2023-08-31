@@ -70,3 +70,22 @@ exports.getformation = async (req, res ) =>{
             res.status(404).json({error:err.message});
     }
   }
+
+
+  
+exports.getformationrating = async (req, res ) =>{
+  try {
+    const formations = await Formation.find();
+    let bestRatedFormation = formations[0]; 
+
+    formations.forEach((formation) => {
+      if (formation.averageRating > bestRatedFormation.averageRating) {
+        bestRatedFormation = formation;
+      }
+    });
+
+    res.json(bestRatedFormation);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};

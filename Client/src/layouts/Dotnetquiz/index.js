@@ -29,7 +29,7 @@ import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 // Billing page components
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
 import Invoices from "layouts/billing/components/Invoices";
-import BillingInformation from "layouts/Nodequiz/components/BillingInformation";
+import BillingInformation from "layouts/Dotnetquiz/components/BillingInformation";
 import Transactions from "layouts/billing/components/Transactions";
 
 function Billing() {

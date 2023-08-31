@@ -1,5 +1,5 @@
 const express = require('express')
-const { getUser, UpdateUser,updateFormationStatus,getCountValidFormationsByMonth,calculateSkillPercentages } = require('../controllers/User');
+const { getUser, UpdateUser,updateFormationStatus,getCountValidFormationsByMonth,calculateSkillPercentages, banUser, unbanUser } = require('../controllers/User');
 const router = express.Router()
 const User=require ('../models/User')
 const cron = require('node-cron');
@@ -34,6 +34,8 @@ router.get('/getCountValidFormationsByMonth', getCountValidFormationsByMonth)
 router.get('/calculateSkillPercentages/:userId', calculateSkillPercentages);
 
 
+router.put('/banuser', banUser);
+router.put('/unbanuser', unbanUser);
 
 
 

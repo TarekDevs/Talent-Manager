@@ -19,11 +19,12 @@ import brandDark from "assets/images/logo-ct-dark.png";
 import BillingInformation from "./layouts/billing/components/BillingInformation"; // Adjust the import path
 import { useState, useEffect, useMemo } from "react";
 import routes from "routes";
-import BillingInformationn from "./layouts/Nodequiz/components/BillingInformation"; // Adjust the import path
-import BillingInformationnn from "./layouts/angularquiz/components/BillingInformation"; // Adjust the import path
+import BillingInformationn from "./layouts/Nodequiz/components/BillingInformation"; 
+import BillingInformationnn from "./layouts/angularquiz/components/BillingInformation"; 
+import BillingInformationnnn from "./layouts/Dotnetquiz/components/BillingInformation"
 
 // react-router components
-import {    useLocation } from "react-router-dom";
+import {useLocation } from "react-router-dom";
 
 export default function App() {
 
@@ -147,9 +148,10 @@ export default function App() {
               path="/quiz/64dbfec52b4cd0c3dd04ab96"
               element={<BillingInformationnn />}
             />
-          
-          
-          
+              <Route
+              path="/quiz/64dbfeeb2b4cd0c3dd04ab98"
+              element={<BillingInformationnnn />}
+            />
               <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </ThemeProvider>
@@ -186,6 +188,10 @@ export default function App() {
               <Route
               path="/quiz/64dbfec52b4cd0c3dd04ab96"
               element={<BillingInformationnn />}
+            />
+              <Route
+              path="/quiz/64dbfeeb2b4cd0c3dd04ab98"
+              element={<BillingInformationnnn/>}
             />
          
                 <Route path="*" element={<Navigate to="/dashboard" />} />

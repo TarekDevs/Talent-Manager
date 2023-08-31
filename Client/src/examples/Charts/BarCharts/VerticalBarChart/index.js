@@ -30,7 +30,7 @@ function VerticalBarChart({ color, title, description, date, chart }) {
   return (
     <Card sx={{ height: '100%' }}>
       <MDBox padding="1rem">
-        <MDBox variant="gradient" bgColor={"white"} borderRadius="lg" coloredShadow={color} py={2} pr={0.5} mt={-5} height="15.5rem">
+        <MDBox variant="gradient" bgColor={"dark"} borderRadius="lg" coloredShadow={color} py={2} pr={0.5} mt={-5} height="15.5rem">
           <MDBox height="100%">
             <Bar data={data} options={options} redraw />
           </MDBox>

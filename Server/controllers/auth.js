@@ -138,6 +138,10 @@ exports.signIn = async (req, res) => {
       });
     }
 
+
+    if (user.isBanned > new Date()) {
+      return res.status(403).send({ success: false, error: "Your account has been banned" });
+    } 
     // If the email and password are valid, user has successfully signed in
     // Generate a token with the user's ID as the payload
     const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
