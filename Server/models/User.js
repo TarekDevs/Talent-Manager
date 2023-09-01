@@ -39,7 +39,12 @@ const userSchema = new mongoose.Schema(
     ProfileInformation: { type: String },
     location: { type: String },
     cv: { type: String },
-    skills: [{ type: String }], // New field for skills
+    skills:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+          ref: "Role",
+      },
+    ],
     experiences: [{ type: String }], // New field for experiences
     Roles: [
       {
