@@ -32,7 +32,7 @@ import MDTypography from "components/MDTypography";
 
 // PieChart configurations
 import configs from "examples/Charts/PieChart/configs";
-
+import SkillStatistics from "layouts/dashboard/components/SkillStatistics";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function PieChart({ icon, title, description, height, chart }) {
@@ -40,6 +40,7 @@ function PieChart({ icon, title, description, height, chart }) {
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
+      
       {title || description ? (
         <MDBox display="flex" px={description ? 1 : 0} pt={description ? 1 : 0}>
           {icon.component && (
@@ -72,8 +73,9 @@ function PieChart({ icon, title, description, height, chart }) {
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Pie data={data} options={options} redraw />
+         <MDBox height={height}>
+            {/* Integrate the adapted SkillStatistics component */}
+            <SkillStatistics />
           </MDBox>
         ),
         [chart, height]

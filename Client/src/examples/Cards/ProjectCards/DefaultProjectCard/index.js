@@ -29,8 +29,8 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDAvatar from "components/MDAvatar";
-
-function DefaultProjectCard({ image, label, title, description, action, authors }) {
+import { FcApproval } from "react-icons/fc";
+function DefaultProjectCard({ image, label, title, description, action, authors,desc,badge }) {
   const renderAuthors = authors.map(({ image: media, name }) => (
     <Tooltip key={name} title={name} placement="bottom">
       <MDAvatar
@@ -61,7 +61,8 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
         overflow: "visible",
       }}
     >
-      <MDBox position="relative" width="100.25%" shadow="xl" borderRadius="xl">
+
+      <MDBox position="relative" width="100.25%" shadow="xl" borderRadius="xl ">
         <CardMedia
           src={image}
           component="img"
@@ -88,7 +89,10 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
               textTransform="capitalize"
             >
               {title}
+              
+              {badge &&  <FcApproval style={{ color: 'green', fontSize: 24 ,marginLeft:"5px" }} />}
             </MDTypography>
+            
           ) : (
             <MDTypography
               component="a"
@@ -101,39 +105,31 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
               {title}
             </MDTypography>
           )}
+          
+               
         </MDBox>
+        <MDBox >
+
+         <MDTypography
+ 
+          variant="h6"
+         textTransform="capitalize"
+         >
+          {desc}
+        </MDTypography></MDBox>
+        
         <MDBox mb={3} lineHeight={0}>
+      
           <MDTypography variant="button" fontWeight="light" color="text">
             {description}
           </MDTypography>
-        </MDBox>
-        <MDBox display="flex" justifyContent="space-between" alignItems="center">
-          {action.type === "internal" ? (
-            <MDButton
-              component={Link}
-              to={action.route}
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </MDButton>
-          ) : (
-            <MDButton
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </MDButton>
-          )}
           <MDBox display="flex">{renderAuthors}</MDBox>
+       
+       
         </MDBox>
-      </MDBox>
+       
+       
+        </MDBox>
     </Card>
   );
 }
@@ -148,10 +144,15 @@ DefaultProjectCard.propTypes = {
   image: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  desc: PropTypes.string.isRequired,
+
   description: PropTypes.string.isRequired,
+  badge: PropTypes.bool.isRequired,
+
   action: PropTypes.shape({
     type: PropTypes.oneOf(["external", "internal"]),
     route: PropTypes.string.isRequired,
+
     color: PropTypes.oneOf([
       "primary",
       "secondary",
@@ -166,6 +167,7 @@ DefaultProjectCard.propTypes = {
     label: PropTypes.string.isRequired,
   }).isRequired,
   authors: PropTypes.arrayOf(PropTypes.object),
+
 };
 
 export default DefaultProjectCard;

@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { ObjectId } = mongoose.Schema.Types
+const Formation = require('./Formation'); // Import the Formation schema
 
 
 const userSchema = new mongoose.Schema(
@@ -20,6 +21,7 @@ const userSchema = new mongoose.Schema(
   
     },
 
+    
     phone: { type: String },
 
     email: {
@@ -34,17 +36,48 @@ const userSchema = new mongoose.Schema(
     },
     password: { type: String },
 
-     
+    isBanned: {type: Date},
+
+    
+    formations: [
+      {
+        formation: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Formation',
+        },
+        valid: {
+          type: Boolean,
+          default: false,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      
+      },
+    ],
+
+
+    
+  
+
     profilePicture: { type: String },
     ProfileInformation: { type: String },
     location: { type: String },
     cv: { type: String },
-    skills:[
+    
+    skills: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-          ref: "Role",
-      },
-    ],
+        name: { type: String },
+        status: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
+        formationId: {type: mongoose.Schema.Types.ObjectId,
+          ref: 'Formation',
+
+        }, 
+      }
+    ]
+,    
+
     experiences: [{ type: String }], // New field for experiences
     Roles: [
       {

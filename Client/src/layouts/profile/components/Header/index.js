@@ -94,6 +94,7 @@ if(!user) return null ;
 const{
   firstName,
   lastName,
+  profilePicture
  
 }=user;
 
@@ -129,7 +130,7 @@ const{
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
+            <MDAvatar src={profilePicture} alt="profile-image" size="xl" shadow="sm" />
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
@@ -141,7 +142,7 @@ const{
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
+            {/* <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
@@ -168,7 +169,7 @@ const{
                   }
                 />
               </Tabs>
-            </AppBar>
+            </AppBar> */}
           </Grid>
         </Grid>
         {children}

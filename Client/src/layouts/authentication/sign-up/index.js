@@ -26,6 +26,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import axios from "axios"; 
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
@@ -33,17 +34,21 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import { toast } from "react-toastify";
+import { RxAvatar } from "react-icons/rx";
 
 function Cover() {
+  const [profilePictureUrl, setFileUrl] = useState(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    file: null, // To store the uploaded file
-    
-  });
+      // Initialize your form data
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      file: null, // Assuming you are using this to upload CV
+      profilePicture: null, // Profile picture file
+    });
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -53,37 +58,87 @@ function Cover() {
   const handleFileChange = (event) => {
     setFormData({ ...formData, file: event.target.files[0] });
   };
+  const [avatar, setAvatar] = useState(null);
 
+  const handleImageClick = (e) => {
+    const profilePicture = e.target.files[0];
+    setFormData({ ...formData, profilePicture });
+    setAvatar(profilePicture);
+
+  };
+
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const url = "http://localhost:8000/api/auth/"; 
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dxououehj/upload';
+    const cloudinaryPreset = 'siwarse'; // Your Cloudinary preset
 
     const formDataToSend = new FormData();
-    formDataToSend.append("firstName", formData.firstName);
-    formDataToSend.append("lastName", formData.lastName);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("phone", formData.phone);
-    formDataToSend.append("password", formData.password);
-    formDataToSend.append("file", formData.file); 
+    formDataToSend.append('file', formData.profilePicture);
+    formDataToSend.append('upload_preset', cloudinaryPreset);
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const cloudinaryResponse = await axios.post(cloudinaryUrl, formDataToSend);
+      const profilePictureUrl = cloudinaryResponse.data.secure_url;
 
-      const data = await response.json();
+      // Your existing form data
+      const userFormData = new FormData();
+      userFormData.append('firstName', formData.firstName);
+      userFormData.append('lastName', formData.lastName);
+      userFormData.append('email', formData.email);
+      userFormData.append('phone', formData.phone);
+      userFormData.append('password', formData.password);
+      userFormData.append('file', formData.file);
+      userFormData.append('profilePicture', profilePictureUrl); // Use the Cloudinary URL
 
-      if (response.ok) {
-        alert("Signed up successfully!");
+      const url = 'http://localhost:8000/api/auth/';
+      const response = await axios.post(url, userFormData);
+
+      if (response.status === 200) {
+        alert('Signed up successfully!');
       } else {
-        console.error("Registration failed:", data.message);
+        console.error('Registration failed:', response.data.message);
       }
     } catch (error) {
-      console.error("Error during registration:", error.message);
+      console.error('Error during registration:', error.message);
     }
   };
+
+
+
+
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+
+  //   const url = "http://localhost:8000/api/auth/"; 
+
+  //   const formDataToSend = new FormData();
+  //   formDataToSend.append("firstName", formData.firstName);
+  //   formDataToSend.append("lastName", formData.lastName);
+  //   formDataToSend.append("email", formData.email);
+  //   formDataToSend.append("phone", formData.phone);
+  //   formDataToSend.append("password", formData.password);
+
+
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       body: formDataToSend,
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       alert("Signed up successfully!");
+  //     } else {
+  //       console.error("Registration failed:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during registration:", error.message);
+  //   }
+  // };
 
   
 
@@ -94,7 +149,7 @@ function Cover() {
 
   return (
     <CoverLayout image={bgImage}>
-    <Card>
+    <Card style={{marginBottom:"20px"}}>
       <MDBox
         variant="gradient"
         bgColor="info"
@@ -126,6 +181,7 @@ function Cover() {
               onChange={handleInputChange}
             />
           </MDBox>
+     
        
           <MDBox mb={2}>
             <MDInput
@@ -176,12 +232,10 @@ function Cover() {
             <input type="file" name="file" onChange={handleFileChange} />
           </MDBox>
 
-          {/* <input type="file" onChange={handleFileChange} />
-        <button type="button" onClick={handleImageUpload}>Upload Image</button>
- */}
+        
 
         
-          <MDBox display="flex" alignItems="center" ml={-1}>
+          {/* <MDBox display="flex" alignItems="center" ml={-1}>
             <Checkbox />
             <MDTypography
               variant="button"
@@ -191,7 +245,7 @@ function Cover() {
             >
               &nbsp;&nbsp;I agree the&nbsp;
             </MDTypography>
-            <MDTypography
+             <MDTypography
               component="a"
               href="#"
               variant="button"
@@ -200,13 +254,52 @@ function Cover() {
               textGradient
             >
               Terms and Conditions
-            </MDTypography>
-          </MDBox>
+            </MDTypography> 
+          </MDBox>  */}
+           {/* <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageClick}
+      /> */}
+         
+         <div style={{ display: 'flex', alignItems: 'center' }}>
+  {avatar ? (
+    <img
+      src={URL.createObjectURL(avatar)}
+      alt="avatar"
+      style={{
+        borderRadius: '50%',
+        width: '40px',
+        height: '40px',
+        border: '0px solid #ccc',
+      }}
+    />
+  ) : (
+    <RxAvatar
+      style={{
+        borderRadius: '50%',
+        width: '30px',
+        height: '30px',
+        marginRight: '10px',
+        color:'#7b809a'
+      }}
+    />
+  )}
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageClick}
+    style={{ marginLeft: '10px' }} // Add spacing between avatar and input
+  />
+</div>
+
           <MDBox mt={4} mb={1}>
             <MDButton type="submit" variant="gradient" color="info" fullWidth>
               Sign Up
             </MDButton>
           </MDBox>
+          
           <MDBox mt={3} mb={1} textAlign="center">
             <MDTypography variant="button" color="text">
               Already have an account?{" "}
