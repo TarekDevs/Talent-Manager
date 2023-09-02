@@ -62,6 +62,7 @@ import {
 } from "@mui/material";
 import axios from "axios"; 
 import { Badge, CheckBox, GitHub, LinkedIn  } from "@mui/icons-material";
+import link from "assets/theme/components/link";
 function Overview() {
 
   const id = localStorage.getItem('userId');
@@ -69,7 +70,8 @@ function Overview() {
   const [open, setOpen] = useState(false); 
   const [profileInformation, setProfileInformation] = useState("");
   const [diplome, setDiplome] = useState("");
- 
+  const [linkedinlink,setlinkedinlink]= useState("")
+  const [githublink,setgithublink]=useState("")
 
 //modal
   const handleOpen = () => {
@@ -97,6 +99,8 @@ const handleSave = () => {
     email,
     ProfileInformation: profileInformation,
     diplome: diplome,
+    linkedinlink:linkedinlink,
+    githublink:githublink,
   };
 
   axios
@@ -108,6 +112,8 @@ const handleSave = () => {
         ...prevUser,
         ProfileInformation: profileInformation,
         diplome : diplome,
+        linkedinlink:linkedinlink,
+        githublink:githublink,
       }));
 
       handleClose();
@@ -117,20 +123,20 @@ const handleSave = () => {
     });
 };
 
-const downloadFormation = (link,index) => {
-  const downloadLink = `http://localhost:8000/api/formation/course/${encodeURIComponent(link)}`;
+// const downloadFormation = (link,index) => {
+//   const downloadLink = `http://localhost:8000/api/formation/course/${encodeURIComponent(link)}`;
 
-  // Create a hidden anchor element to trigger the download
-  const anchor = document.createElement("a");
-  anchor.href = downloadLink;
-  anchor.download = link; // You can set a custom download filename here
-  anchor.style.display = "none";
-  document.body.appendChild(anchor);
+//   // Create a hidden anchor element to trigger the download
+//   const anchor = document.createElement("a");
+//   anchor.href = downloadLink;
+//   anchor.download = link; // You can set a custom download filename here
+//   anchor.style.display = "none";
+//   document.body.appendChild(anchor);
 
-  anchor.click();
+//   anchor.click();
 
-  document.body.removeChild(anchor);
-};
+//   document.body.removeChild(anchor);
+// };
 
 
 const [formations, setFormations] = useState([]);
@@ -150,6 +156,8 @@ const getUser = async() => {
   setProfileInformation(data.ProfileInformation);
   setDiplome(data.diplome);
   setFormations(data.formations)
+  setlinkedinlink(data.linkedinlink)
+  setgithublink(data.githublink)
  
 
 };
@@ -230,15 +238,15 @@ useEffect(() => {
                   mobile: phone,
                   email: email,
                   // profileInformation: user.ProfileInformation, // Use the updated profile information
-                  CV: (
-                    <a
-                      href={`http://localhost:8000/api/users/cv/${encodeURIComponent(cv)}`}
-                      download
-                      style={{ width: "15px", color: "gray" }}
-                    >
-                      <CloudDownloadIcon style={{ width: "15px", color: "gray", fontSize: 32 }} /> Download
-                    </a>
-                  ),
+                  // CV: (
+                  //   <a
+                  //     href={`http://localhost:8000/api/users/cv/${encodeURIComponent(cv)}`}
+                  //     download
+                  //     style={{ width: "15px", color: "gray" }}
+                  //   >
+                  //     <CloudDownloadIcon style={{ width: "15px", color: "gray", fontSize: 32 }} /> Download
+                  //   </a>
+                  // ),
                   diplome: user.diplome,
                   skills: (
                     <div>
@@ -255,12 +263,12 @@ useEffect(() => {
                 social={[
                
                   {
-                    link: "https://linkedin.com/",
+                    link: `${linkedinlink}`,
                     icon: <LinkedIn />,
-                    color: "twitter",
+                    color: "linkedin",
                   },
                   {
-                    link: "https://www.instagram.com/creativetimofficial/",
+                    link: `${githublink}`,
                     icon: <GitHub />,
                     color: "instagram",
                   },
@@ -288,6 +296,10 @@ useEffect(() => {
         profileInformation={profileInformation}
         setProfileInformation={setProfileInformation}
         diplome={diplome}
+        linkedinlink={linkedinlink}
+        setlinkedinlink={setlinkedinlink}
+        setgithublink={setgithublink}
+        githublink={githublink}
         setDiplome={setDiplome}
         handleSave={handleSave}
       />

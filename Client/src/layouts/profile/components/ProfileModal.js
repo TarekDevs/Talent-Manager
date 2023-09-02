@@ -26,6 +26,10 @@ function ProfileModal({
   setDiplome,
   handleSave,
   profilePicture,
+  linkedinlink,
+  setlinkedinlink,
+  githublink,
+  setgithublink,
 }) {
   return (
     <Modal
@@ -80,6 +84,22 @@ function ProfileModal({
             fullWidth
             value={diplome}
             onChange={(e) => setDiplome(e.target.value)}
+          /></MDTypography>  
+           <MDTypography variant="h6" fontWeight="medium">
+          linkedinlink
+                    <TextField
+            variant="outlined"
+            fullWidth
+            value={linkedinlink}
+            onChange={(e) => setlinkedinlink(e.target.value)}
+          /></MDTypography>  
+           <MDTypography variant="h6" fontWeight="medium">
+          githublink
+                    <TextField
+            variant="outlined"
+            fullWidth
+            value={githublink}
+            onChange={(e) => setgithublink(e.target.value)}
           /></MDTypography>    
           <MDButton
                  variant="outlined"
@@ -119,6 +139,10 @@ ProfileModal.propTypes = {
     setDiplome: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
     profilePicture:PropTypes.string.isRequired,
+    setlinkedinlink:PropTypes.func.isRequired,
+    linkedinlink:PropTypes.string.isRequired,
+    githublink:PropTypes.string.isRequired,
+    setgithublink:PropTypes.func.isRequired,
 
   };
 

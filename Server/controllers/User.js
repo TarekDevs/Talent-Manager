@@ -14,7 +14,7 @@ exports.getUser = async (req, res) => {
       .populate({
         path: 'skills.formationId',
         select: 'image label title desc link valid',
-      }); 
+      }).populate('Roles');
     res.status(200).json(user);
   } catch (err) {
     res.status(404).json({ error: err.message });

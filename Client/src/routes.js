@@ -57,6 +57,7 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
+  
   {
     type: "collapse",
     name: "Tables",

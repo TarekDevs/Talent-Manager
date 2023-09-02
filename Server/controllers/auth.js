@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const pdfjsLib = require('pdfjs-dist');
 const pdfParse = require('pdf-parse'); // Import the pdf-parse library
 const skillsKeywords = ['languges'];
+const mongoose = require("mongoose");
 
 exports.register = async (req, res) => {
   try {
@@ -80,6 +81,21 @@ exports.register = async (req, res) => {
       // extractedExperiences will contain an array of extracted experience lines
       console.log(extractedExperiences);
     }
+
+    const roleId = req.body.roleId // Replace with the actual role ID
+    const roleObjectId = new mongoose.Types.ObjectId(roleId);
+
+
+    const role = await Role.findById(roleId); // Find the role by its ID
+
+    if (!role) {
+      return res.status(404).json({
+        success: false,
+        message: "Role not found",
+      });
+    }
+
+    
     const newuser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -90,7 +106,11 @@ exports.register = async (req, res) => {
       skills: skillsArray, // Save the skills array
       profilePicture:req.body.profilePicture,
       experiences: extractedExperiences,
+      Roles: [], // Initialize an empty array for roles
+
     });
+    newuser.Roles.push(roleObjectId);
+
 
     const userExists = await User.findOne({ email: req.body.email });
 
@@ -138,22 +158,34 @@ exports.signIn = async (req, res) => {
       });
     }
 
-
     if (user.isBanned > new Date()) {
       return res.status(403).send({ success: false, error: "Your account has been banned" });
-    } 
+    }
+
     // If the email and password are valid, user has successfully signed in
     // Generate a token with the user's ID as the payload
-    const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, roles: user.Roles }, 'your-secret-key', { expiresIn: '1h' });
 
-    var authorities = [];
 
     // Pass token to Header Session
     res.set("token", token);
     res.set("Access-Control-Expose-Headers", "token");
-    for (let i = 0; i < user.Roles.length; i++) {
-      authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-    }
+
+    // // Check if user.Roles is defined before accessing it
+    // if (user.Roles && Array.isArray(user.Roles)) {
+    //   for (let i = 0; i < user.Roles.length; i++) {
+    //     authorities.push("ROLE_" + user.Roles[i].name.toUpperCase());
+    //   }
+    // }
+
+   // Check if user.Roles is defined and an array before accessing it
+   const authorities = user.Roles && Array.isArray(user.Roles)
+   ? user.Roles.map(role => role.name ? "ROLE_" + role.name.toUpperCase() : null)
+   : [];
+ 
+ // Filter out any null values
+ const filteredAuthorities = authorities.filter(authority => authority !== null);
+ 
 
     res.status(200).json({
       success: true,
@@ -168,13 +200,14 @@ exports.signIn = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
     });
   }
 };
+
 
 // SignOut
 exports.signOut = async (req, res) => {

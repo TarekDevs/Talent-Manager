@@ -92,8 +92,8 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    preferences: { type: String },
-
+    linkedinlink: { type: String },
+    githublink:{type:String}
 
    
     }, { timestamps: true });

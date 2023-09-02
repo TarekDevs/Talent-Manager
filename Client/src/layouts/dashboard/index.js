@@ -39,9 +39,29 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import FormationStatistics from "./components/FormationStatistics";
 import { line } from "stylis";
+import { useState,useEffect } from "react";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const id = localStorage.getItem('userId');
+  const [roles, setRoles] = useState([]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+        const data = await response.json();
+        setRoles(data.Roles);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    getUser();
+  }, [id]);
+
+  const hasEmployeeRole = roles.some(role => role.name === "employee");
+
 
   return (
     <DashboardLayout>
@@ -124,6 +144,7 @@ function Dashboard() {
 
             
 
+            {hasEmployeeRole && (
 
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
@@ -136,7 +157,7 @@ function Dashboard() {
 
 
               </MDBox>
-            </Grid>
+            </Grid>)}
             
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>

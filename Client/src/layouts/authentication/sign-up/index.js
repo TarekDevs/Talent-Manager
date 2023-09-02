@@ -47,13 +47,22 @@ function Cover() {
       password: '',
       file: null, // Assuming you are using this to upload CV
       profilePicture: null, // Profile picture file
+      isHR: false, 
+    isEmployee: false, 
     });
   
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const handleInputChange = (event) => {
+      const { name, value, type, checked } = event.target;
+  
+      if (type === 'checkbox') {
+        setFormData({ ...formData, [name]: checked });
+      } else if (name === 'file' || name === 'profilePicture') {
+        setFormData({ ...formData, [name]: event.target.files[0] });
+      } else {
+        setFormData({ ...formData, [name]: value });
+      }
+    };
 
   const handleFileChange = (event) => {
     setFormData({ ...formData, file: event.target.files[0] });
@@ -91,6 +100,16 @@ function Cover() {
       userFormData.append('password', formData.password);
       userFormData.append('file', formData.file);
       userFormData.append('profilePicture', profilePictureUrl); // Use the Cloudinary URL
+
+      if (formData.isHR) {
+        userFormData.append('roleId', '64ca9bda320ef3d3bb184e1f');
+      }
+
+      // Check if Employee checkbox is checked and add Employee roleId if true
+      if (formData.isEmployee) {
+        userFormData.append('roleId', '64ca9bda320ef3d3bb184e20');
+      }
+
 
       const url = 'http://localhost:8000/api/auth/';
       const response = await axios.post(url, userFormData);
@@ -293,6 +312,47 @@ function Cover() {
     style={{ marginLeft: '10px' }} // Add spacing between avatar and input
   />
 </div>
+
+
+
+<MDBox mb={2} style={{marginTop:'20px'}}>
+  <Checkbox
+    name="isAdmin"
+    checked={formData.isHR}
+    onChange={handleInputChange}
+  />
+  <MDTypography
+    variant="button"
+    fontWeight="regular"
+    color="text"
+    sx={{
+      cursor: "pointer",
+      userSelect: "none",
+      ml: -1,
+    }}
+  >
+    Register as HR
+  </MDTypography>
+  <Checkbox
+    name="isEmployee"
+    checked={formData.isEmployee}
+    onChange={handleInputChange}
+    style={{marginLeft:"90px"}}
+  />
+  <MDTypography
+    variant="button"
+    fontWeight="regular"
+    color="text"
+    sx={{
+      cursor: "pointer",
+      userSelect: "none",
+      ml: -1,
+    }}
+  >
+    Register as Employee
+  </MDTypography>
+</MDBox>
+
 
           <MDBox mt={4} mb={1}>
             <MDButton type="submit" variant="gradient" color="info" fullWidth>
