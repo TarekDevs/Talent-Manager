@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,15 +15,16 @@ import createCache from "@emotion/cache";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
-import BillingInformation from "./layouts/billing/components/BillingInformation"; // Adjust the import path
+import BillingInformation from "./layouts/billing/components/BillingInformation"; // react quiz
 import { useState, useEffect, useMemo } from "react";
 import routes from "routes";
-import BillingInformationn from "./layouts/Nodequiz/components/BillingInformation"; 
-import BillingInformationnn from "./layouts/angularquiz/components/BillingInformation"; 
-import BillingInformationnnn from "./layouts/Dotnetquiz/components/BillingInformation"
+import BillingInformationn from "./layouts/Nodequiz/components/BillingInformation";  // node quiz
+import BillingInformationnn from "./layouts/angularquiz/components/BillingInformation"; //angular quiz
+import BillingInformationnnn from "./layouts/Dotnetquiz/components/BillingInformation" // dotnetquiz
 
 // react-router components
 import {useLocation } from "react-router-dom";
+import Tables from "layouts/tables";
 
 export default function App() {
 
@@ -84,7 +84,9 @@ export default function App() {
       }
 
       if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+        return <Route exact path={route.route}
+         element={route.component}
+          key={route.key} />;
       }
 
       return null;
@@ -115,6 +117,7 @@ export default function App() {
   );
 
   return direction === "rtl" ? (
+    
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
@@ -135,7 +138,11 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-         
+          <Route
+            path="/dashboard/skills/:id"
+            element={<Tables />} // Render your Tables component
+          />
+
             <Route
               path="/quiz/64dbfdf72b4cd0c3dd04ab92"
               element={<BillingInformation />}
@@ -152,11 +159,13 @@ export default function App() {
               path="/quiz/64dbfeeb2b4cd0c3dd04ab98"
               element={<BillingInformationnnn />}
             />
-              <Route path="*" element={<Navigate to="/dashboard" />} />
+              <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
         </Routes>
+
       </ThemeProvider>
     </CacheProvider>
   ) : (
+    <>
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {layout === "dashboard" && (
@@ -176,7 +185,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-     
+      
             <Route
               path="/quiz/64dbfdf72b4cd0c3dd04ab92"
               element={<BillingInformation />}
@@ -194,8 +203,14 @@ export default function App() {
               element={<BillingInformationnnn/>}
             />
          
-                <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
+          <Route path="*" 
+          element={<Navigate to="/authentication/sign-in" />} />
+</Routes>
+ 
+   
     </ThemeProvider>
+   
+  
+</>
   );
 }

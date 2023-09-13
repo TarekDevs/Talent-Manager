@@ -24,6 +24,7 @@ import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
+import { toast } from 'react-toastify';
 
 // @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -59,18 +60,22 @@ function Basic() {
 
       const { data } = response;
 
+
       if (data.success) {
         // Store user ID in local storage
         localStorage.setItem('userId', data.user.id);
-        data.user.roles = data.Roles; 
         localStorage.setItem('user', JSON.stringify(data.user));
+
+        // const isAdmin = data.user.roles.some(role => role.name === "employee");
+        if (data.user.isAdmin) {
+          toast.info("Admin logged in");
+          navigate("/dashboard/admintable");
         
-        // Navigate to the dashboard
-        navigate("/profile");
       } else {
-        console.log(data.message); // Handle error messages
+        navigate("/dashboard/profile");
       }
-    } catch (error) {
+    } }
+    catch (error) {
       console.log(error);
     }
   };

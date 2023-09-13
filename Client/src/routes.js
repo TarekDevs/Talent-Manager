@@ -39,14 +39,19 @@ Coded by www.creative-tim.com
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
+import RhTable from "layouts/RhTable"
 import Formation from "layouts/formation"
-import RTL from "layouts/rtl";
+import UserDetails from "layouts/userDetails"
+// import RTL from "layouts/rtl";
+import LogoutButton from "layouts/authentication/sign-out"
+
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import AdminTable from "layouts/Admintable/index"
 // @mui icons
 import Icon from "@mui/material/Icon";
+import { Notfound } from "layouts/Notfound/Notfound";
 
 const routes = [
   {
@@ -56,91 +61,110 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    e:"both"
+
+  },
+
+  {
+    key: "userDetails",
+    route: "/dashboard/userDetails/:id",
+    component: <UserDetails />,
+    rolee:"HR"
+
   },
   
   {
-    type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/skills",
-    component: <Tables />,
-  },
-  // {
-  //   type: "collapse",
-  //   name: "Quiz",
-  //   key: "billing",
-  //   icon: <Icon fontSize="small">quiz</Icon>,
-  //   route: "/quiz",
-  //   component: <Billing />,
-  // },
- 
-  // {
-  //   type: "collapse",
-  //   name: "Quizz",
-  //   key: "quiz",
-  //   icon: <Icon fontSize="small">quiz react</Icon>,
-  //   route: "/quizreact",
-  //   component: <Quiz />,
-  // },
-
-
-  // {
-  //   type: "collapse",
-  //   name: "RTL",
-  //   key: "rtl",
-  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-  //   route: "/rtl",
-  //   component: <RTL />,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Notifications",
-  //   key: "notifications",
-  //   icon: <Icon fontSize="small">notifications</Icon>,
-  //   route: "/quizz",
-  //   component: <Notifications />,
-  // },
-  {
+    
     type: "collapse",
     name: "Profile",
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
+    route: "/dashboard/profile",
     component: <Profile />,
+    e:"both"
+
   },
   {
     type: "collapse",
     name: "formation",
     key: "formation",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/formation",
+    route: "/dashboard/formation",
     component: <Formation />,
+    rolee:"employee"
   },
+ 
   {
     type: "collapse",
     name: "AdminTable",
     key: "AdminTable",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/admintable",
+    route: "/dashboard/admintable",
     component: <AdminTable />,
+    rolee:"admin"
+
   },
+
+  
+  {
+    name: "Skills table",
+    key: "skills",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/dashboard/skills/:id",
+    component: <Tables />,
+  
+
+  },
+
+
+
   {
     type: "collapse",
-    name: "Sign In",
+    name: "RhTable",
+    key: "RhTable",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/dashboard/rhTable",
+    component: <RhTable/>,
+    rolee:"HR"
+  },
+  {
+   
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
+
   },
+ 
   {
-    type: "collapse",
-    name: "Sign Up",
+    
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+
   },
+  {
+    type: "collapse",
+    name: "LogOut",
+    key: "sign-out",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/sign-out",
+    component: <LogoutButton />,
+    rolee:"HR",
+    e:"both"
+
+
+  },
+  {    key: "notfound",
+
+    name: "notfound",
+    route: "/notfound",
+    component: <Notfound />,
+
+  },
+
+
  
 ];
 

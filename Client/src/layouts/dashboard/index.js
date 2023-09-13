@@ -40,10 +40,16 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import FormationStatistics from "./components/FormationStatistics";
 import { line } from "stylis";
 import { useState,useEffect } from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const id = localStorage.getItem('userId');
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const navigate = useNavigate();
+
+
+  
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
@@ -55,13 +61,19 @@ function Dashboard() {
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
+      if (user) {
+        navigate("/dashboard", { replace: true });
+      } else if (!user) {
+        navigate("/authentication/sign-in", { replace: true });
+      }
     };
 
     getUser();
-  }, [id]);
+  }, [id,Navigate]);
 
   const hasEmployeeRole = roles.some(role => role.name === "employee");
 
+  
 
   return (
     <DashboardLayout>
@@ -167,13 +179,13 @@ function Dashboard() {
               </MDBox>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <BestRatedFormation
                 
                 />
               </MDBox>
-            </Grid>
+            </Grid> 
             {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
@@ -189,9 +201,10 @@ function Dashboard() {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
+          {!hasEmployeeRole && (
             <Grid item xs={12} md={6} lg={8}  style={{marginLeft:"220px"}}>
               <Projects />
-            </Grid>
+            </Grid>)}
             {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
             </Grid> */}

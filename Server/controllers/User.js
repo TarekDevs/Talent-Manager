@@ -23,6 +23,18 @@ exports.getUser = async (req, res) => {
 
 
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find()
+
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+}
+
+
+
   exports.UpdateUser = async (req, res) => {
     try {
         const data = await User.findOneAndUpdate(
@@ -192,4 +204,27 @@ exports.getUser = async (req, res) => {
     await user.save();
   
     res.status(200).json({ success: true, message: "User has been unbanned" });
+  };
+
+  exports.updateCareerPlan = async (req, res) => {
+    const userId = req.params.userId;
+    const newCareerPlan = req.body.careerPlan;
+  
+    try {
+      // Find the user by ID
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Update the user's career plan
+      user.careerPlan = newCareerPlan;
+      await user.save();
+  
+      return res.status(200).json({ message: "Career plan updated successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "An error occurred while updating the career plan" });
+    }
   };

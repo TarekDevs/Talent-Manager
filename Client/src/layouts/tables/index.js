@@ -13,14 +13,43 @@ import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import FormationList from "./data/FormationList";
+import { Notfound } from "layouts/Notfound/Notfound";
+import { useNavigate, useParams } from "react-router-dom";
+
 // Your Tables component
 function Tables() {
 
 
-const id = localStorage.getItem('userId');
+const { id } = useParams(); // Extract the "id" parameter from route params
 const [formations, setFormations] = useState([]); 
+const navigate = useNavigate();
+const user = JSON.parse(localStorage.getItem("user"));
+
+
+
+
+
+
+
+useEffect(() => {
+  const getUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+      const data = await response.json();
+      // setRoles(data.Roles);
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+
+    if (!user) {
+      navigate("/authentication/sign-in", { replace: true });
+    }
+  };
+
+  getUser();
+}, [id,navigate]);
+
 
 useEffect(() => {
   async function fetchFormations() {
@@ -38,8 +67,8 @@ useEffect(() => {
 
 const {columns,rows}=authorsTableData()
 
-  return (
-    <DashboardLayout>
+return  (
+  <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
@@ -79,7 +108,8 @@ const {columns,rows}=authorsTableData()
       </MDBox>
       <Footer />
     </DashboardLayout>
-  );
+ 
+);
 }
 
 export default Tables;

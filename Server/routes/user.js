@@ -1,5 +1,5 @@
 const express = require('express')
-const { getUser, UpdateUser,updateFormationStatus,getCountValidFormationsByMonth,calculateSkillPercentages, banUser, unbanUser } = require('../controllers/User');
+const { getUser, UpdateUser,updateFormationStatus,getCountValidFormationsByMonth,calculateSkillPercentages, banUser, unbanUser ,getAllUsers,updateCareerPlan} = require('../controllers/User');
 const router = express.Router()
 const User=require ('../models/User')
 const cron = require('node-cron');
@@ -69,6 +69,10 @@ router.put('/updateStatus/:userId/:skillId', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get('/getallusers',getAllUsers)
+
+
 router.post('/add-course/:id', async (req, res) => {
     try {
       const { courseId, courseInfo } = req.body; // Include courseInfo with all course details
@@ -92,5 +96,9 @@ router.post('/add-course/:id', async (req, res) => {
       return res.status(500).json({ error: 'Server error' });
     }
   });
+
+
+  router.put('/career-plan/:userId', updateCareerPlan);
+
   
 module.exports = router;

@@ -164,7 +164,7 @@ exports.signIn = async (req, res) => {
 
     // If the email and password are valid, user has successfully signed in
     // Generate a token with the user's ID as the payload
-    const token = jwt.sign({ id: user._id, roles: user.Roles }, 'your-secret-key', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id,}, 'your-secret-key', { expiresIn: '1h' });
 
 
     // Pass token to Header Session
@@ -196,7 +196,8 @@ exports.signIn = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        // Add other user information that you want to return after sign-in
+        isAdmin:user.isAdmin,
+        success: true 
       }
     });
   } catch (error) {

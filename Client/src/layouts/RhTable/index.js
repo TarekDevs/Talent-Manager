@@ -8,30 +8,36 @@ import MDTypography from "components/MDTypography";
 import axios from "axios";
 import DataTable from "examples/Tables/DataTable"; 
 import MDButton from "components/MDButton";
-import { useNavigate } from "react-router-dom";
 import { Notfound } from "layouts/Notfound/Notfound";
+import { useNavigate } from "react-router-dom";
 
 function Tables() {
+
   const id = localStorage.getItem("userId");
+  const [users, setUsers] = useState([]);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
-  const [banDate, setBanDate] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
-  const [roles, setRoles] = useState([]);
-
-
+  
+  const LoadingSpinner = () => {
+    return (
+      <div className="loading-spinner">
+      </div>
+    );
+  };
   useEffect(() => {
     const getUser = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/users/getallusers');
         setUsers(response.data);
+
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
       if (user) {
-        navigate("/dashboard/admintable", { replace: true });
+        navigate("/dashboard/rhTable", { replace: true });
       } else if (!user) {
         navigate("/authentication/sign-in", { replace: true });
       }
@@ -40,7 +46,7 @@ function Tables() {
     getUser();
   }, [navigate]);
 
-  const formattedBanDate = new Date(banDate).toISOString();
+  
 
   const getUserr = async() => {
     const response = await fetch (`http://localhost:8000/api/users/getuser/${id}`, {
@@ -57,37 +63,18 @@ function Tables() {
     getUserr();
 }, [id]);
 
-const hasEmployeeRole = roles.some(role => role.name === "admin");
+  const hasEmployeeRole = roles.some(role => role.name === "HR");
 
-const handleBan = async (userID) => {
-  await axios.put("http://localhost:8000/api/users/banuser", { userID, banDate: formattedBanDate });
-  setUser((prevUser) => ({
-    ...prevUser,
-    isBanned: new Date(banDate)
-  }));
-};
-
-const handleUnban = async (userID) => {
-  await axios.put("http://localhost:8000/api/users/unbanuser", { userID });
-  setUser((prevUser) => ({
-    ...prevUser,
-    isBanned: null
-  }));
-};
 
   useEffect(() => {
     const columns = [
       { name: "First name", selector: "firstName", sortable: true },
       { name: "Last name", selector: "lastName", sortable: true },
       { name: "Email", selector: "email", sortable: true },
-      {
-        name: "Ban Status",
-        selector: "isBannedStatus",
-        sortable: true,
-      },
+     
       {
         name: "Actions",
-        selector: "banActions",
+        selector: "datailAction",
         sortable: true,
       },
      
@@ -99,50 +86,18 @@ const handleUnban = async (userID) => {
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
-  isBannedStatus: (
-    <p>{new Date(user.isBanned) > new Date() ? "Banned" : "Active"}</p>
-  ),
-  banActions: (
+  
+  datailAction: (
     <MDTypography>
-      {new Date(user.isBanned) > new Date() ? (
-        <MDButton color="dark" onClick={() => handleUnban(user._id)}>
-          Unban
+     
+        <MDButton color="dark"  onClick={() => handleDetails(user._id)}>
+          details
         </MDButton>
-      ) : (
-        <>
-          <div key={user._id}>
-            <input
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                fontSize: '14px',
-                fontFamily: 'monospace',
-                outline: 'none',
-                borderColor: '#007bff',
-              }}
-              type="date"
-              id={user._id}
-              value={
-                new Date(user.isBanned) > new Date()
-                  ? user.isBanned.toISOString().substr(0, 10)
-                  : null
-              }
-              onChange={(e) => setBanDate(e.target.value)}
-            />
-            <MDButton
-              color="primary"
-              onClick={() => handleBan(user._id)}
-              style={{ marginLeft: '25px' }}
-            >
-              Ban
-            </MDButton>
-          </div>
-        </>
-      )}
+ 
+   
     </MDTypography>
   ),
-}));
+  }));
 
 setColumns(columns);
 setData(mappedData);
@@ -150,13 +105,21 @@ setData(mappedData);
 
 
 
+ 
+  function handleDetails (Id) {
+    // Navigate to the user details page for the specified user ID
+    window.location.href = `/dashboard/userDetails/${Id}`;
+  }
 
-if (!hasEmployeeRole) {
-  return <div className="loading-spinner">
-  </div>;
-}
 
-  return  hasEmployeeRole ?(
+  if (!hasEmployeeRole) {
+    return <LoadingSpinner />;
+  }
+
+
+
+  
+return hasEmployeeRole ? (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
@@ -197,8 +160,10 @@ if (!hasEmployeeRole) {
       </MDBox>
       <Footer />
     </DashboardLayout>
-   ) : (
+  ) : (
     <Notfound />
   );
 }
+
+
 export default Tables;

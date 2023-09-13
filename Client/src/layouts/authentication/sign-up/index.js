@@ -55,12 +55,10 @@ function Cover() {
     const handleInputChange = (event) => {
       const { name, value, type, checked } = event.target;
   
-      if (type === 'checkbox') {
-        setFormData({ ...formData, [name]: checked });
-      } else if (name === 'file' || name === 'profilePicture') {
-        setFormData({ ...formData, [name]: event.target.files[0] });
-      } else {
-        setFormData({ ...formData, [name]: value });
+      if (name === 'isHR') {
+        setFormData({ isHR: checked, isEmployee: !checked });
+      } else if (name === 'isEmployee') {
+        setFormData({ isHR: !checked, isEmployee: checked });
       }
     };
 
@@ -110,6 +108,8 @@ function Cover() {
         userFormData.append('roleId', '64ca9bda320ef3d3bb184e20');
       }
 
+      
+
 
       const url = 'http://localhost:8000/api/auth/';
       const response = await axios.post(url, userFormData);
@@ -123,46 +123,6 @@ function Cover() {
       console.error('Error during registration:', error.message);
     }
   };
-
-
-
-
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-
-  //   const url = "http://localhost:8000/api/auth/"; 
-
-  //   const formDataToSend = new FormData();
-  //   formDataToSend.append("firstName", formData.firstName);
-  //   formDataToSend.append("lastName", formData.lastName);
-  //   formDataToSend.append("email", formData.email);
-  //   formDataToSend.append("phone", formData.phone);
-  //   formDataToSend.append("password", formData.password);
-
-
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "POST",
-  //       body: formDataToSend,
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       alert("Signed up successfully!");
-  //     } else {
-  //       console.error("Registration failed:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during registration:", error.message);
-  //   }
-  // };
-
-  
-
- 
-
 
 
 
@@ -199,9 +159,7 @@ function Cover() {
               value={formData.firstName}
               onChange={handleInputChange}
             />
-          </MDBox>
-     
-       
+          </MDBox>               
           <MDBox mb={2}>
             <MDInput
               type="text"
@@ -247,39 +205,8 @@ function Cover() {
             />
           </MDBox>
           <MDBox mb={2}>
-            {/* File input field */}
             <input type="file" name="file" onChange={handleFileChange} />
           </MDBox>
-
-        
-
-        
-          {/* <MDBox display="flex" alignItems="center" ml={-1}>
-            <Checkbox />
-            <MDTypography
-              variant="button"
-              fontWeight="regular"
-              color="text"
-              sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-            >
-              &nbsp;&nbsp;I agree the&nbsp;
-            </MDTypography>
-             <MDTypography
-              component="a"
-              href="#"
-              variant="button"
-              fontWeight="bold"
-              color="info"
-              textGradient
-            >
-              Terms and Conditions
-            </MDTypography> 
-          </MDBox>  */}
-           {/* <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageClick}
-      /> */}
          
          <div style={{ display: 'flex', alignItems: 'center' }}>
   {avatar ? (
@@ -309,11 +236,9 @@ function Cover() {
     type="file"
     accept="image/*"
     onChange={handleImageClick}
-    style={{ marginLeft: '10px' }} // Add spacing between avatar and input
+    style={{ marginLeft: '10px' }} 
   />
 </div>
-
-
 
 <MDBox mb={2} style={{marginTop:'20px'}}>
   <Checkbox
@@ -351,15 +276,12 @@ function Cover() {
   >
     Register as Employee
   </MDTypography>
-</MDBox>
-
-
+        </MDBox>
           <MDBox mt={4} mb={1}>
             <MDButton type="submit" variant="gradient" color="info" fullWidth>
               Sign Up
             </MDButton>
-          </MDBox>
-          
+          </MDBox>         
           <MDBox mt={3} mb={1} textAlign="center">
             <MDTypography variant="button" color="text">
               Already have an account?{" "}

@@ -3,10 +3,11 @@ import axios from "axios";
 import { FormControl, Select, MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
 import MDTypography from "components/MDTypography";
-function FormationList({ onSelectFormation, initialSelectedFormationTitle,handleFormationSelect   }) {
+function FormationList({ onSelectFormation, initialSelectedFormationTitle,handleFormationSelect ,readOnly  }) {
   const [formations, setFormations] = useState([]);
   const [skills,setSkills]= useState([]);
   const id = localStorage.getItem('userId');
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -39,6 +40,9 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle,handle
     initialSelectedFormationTitle || ""
   );
   const handleFormationChange = (event) => {
+    if (readOnly) {
+      return;
+    }
     const selectedTitle = event.target.value;
     setSelectedFormationTitle(selectedTitle);
 
@@ -52,6 +56,7 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle,handle
 
 
   return (
+
     <FormControl variant="outlined" fullWidth>
   <Select
     labelId="formation-select-label"
@@ -67,18 +72,17 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle,handle
       <MenuItem
         key={formation._id}
         value={formation.title}
-        disabled={formation.authors.some(author => author._id.toString() === id.toString())} 
-      >
+        disabled={
+          formation.authors.some(
+            (author) => author._id.toString() === id.toString()
+          ) || readOnly 
+        }      >
           
         {formation.title}
       </MenuItem>
     ))}
   </Select>
-  {/* {skills.map((i)=>(
-  <MDTypography display="block" variant="button" fontWeight="medium"        key={i._id}
-  >
-{i.formationTitle}
-        </MDTypography>))} */}
+ 
 </FormControl>
 
 
@@ -88,7 +92,9 @@ function FormationList({ onSelectFormation, initialSelectedFormationTitle,handle
 FormationList.propTypes = {
   initialSelectedFormationTitle: PropTypes.string,
   onSelectFormation: PropTypes.func.isRequired,
-  handleFormationSelect: PropTypes.func.isRequired, // Add this prop type
+  handleFormationSelect: PropTypes.func.isRequired, 
+  readOnly: PropTypes.bool.isRequired, 
+
 };
 
 export default FormationList;

@@ -36,58 +36,30 @@ import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // Overview page components
-import Header from "layouts/profile/components/Header";
-
+import Header from "layouts/userDetails/components/Header";
+import { useParams } from 'react-router-dom';
 // Data
-import profilesListData from "layouts/profile/data/profilesListData";
-import ProfileModal from "./components/ProfileModal"
-
-
-// Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import homeDecor2 from "assets/images/home-decor-2.jpg";
-import homeDecor3 from "assets/images/home-decor-3.jpg";
-import homeDecor4 from "assets/images/home-decor-4.jpeg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import Card from "@mui/material/Card";
+import Bill from "layouts/billing/components/CarrierePlan";
 import { useState,useEffect } from "react";
-import CloudDownloadIcon  from '@mui/icons-material/CloudDownload'; 
-import {
-  TextField,
-  Button,
-} from "@mui/material";
+import { Notfound } from "layouts/Notfound/Notfound";
 import axios from "axios"; 
-import { Badge, CheckBox, GitHub, LinkedIn  } from "@mui/icons-material";
+import {GitHub, LinkedIn  } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 function Overview() {
 
-  const id = localStorage.getItem('userId');
+  const { id } = useParams();
   const [user,setUser]= useState(null);  
-  const [open, setOpen] = useState(false); 
   const [profileInformation, setProfileInformation] = useState("");
   const [diplome, setDiplome] = useState("");
-  const [linkedinlink,setlinkedinlink]= useState("")
-  const [githublink,setgithublink]=useState("")
+  const [careerPlans, setCareerPlans] = useState([]);
+  const [formations, setFormations] = useState([]);
+
+  const userr = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
-
-//modal
-  const handleOpen = () => {
-    setOpen(true);
-
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
- 
-
-
 
 
 //handleupdateuser 
@@ -99,8 +71,6 @@ const handleSave = () => {
     email,
     ProfileInformation: profileInformation,
     diplome: diplome,
-    linkedinlink:linkedinlink,
-    githublink:githublink,
   };
 
   axios
@@ -112,8 +82,6 @@ const handleSave = () => {
         ...prevUser,
         ProfileInformation: profileInformation,
         diplome : diplome,
-        linkedinlink:linkedinlink,
-        githublink:githublink,
       }));
 
       handleClose();
@@ -123,30 +91,15 @@ const handleSave = () => {
     });
 };
 
-// const downloadFormation = (link,index) => {
-//   const downloadLink = `http://localhost:8000/api/formation/course/${encodeURIComponent(link)}`;
 
-//   // Create a hidden anchor element to trigger the download
-//   const anchor = document.createElement("a");
-//   anchor.href = downloadLink;
-//   anchor.download = link; // You can set a custom download filename here
-//   anchor.style.display = "none";
-//   document.body.appendChild(anchor);
-
-//   anchor.click();
-
-//   document.body.removeChild(anchor);
-// };
-
-
-const [formations, setFormations] = useState([]);
-const [roles, setRoles] = useState([]);
 
 
 
 
 
 //getuserinformation
+const [roles, setRoles] = useState([]);
+
 const getUser = async() => {
   const response = await fetch (`http://localhost:8000/api/users/getuser/${id}`, {
     method: "GET",
@@ -154,19 +107,37 @@ const getUser = async() => {
 
   const data = await response.json();
   setUser(data);
-  setProfileInformation(data.Information);
+  setProfileInformation(data.ProfileInformation);
   setDiplome(data.diplome);
   setFormations(data.formations)
-  setlinkedinlink(data.linkedinlink)
-  setgithublink(data.githublink)
   setRoles(data.Roles);
 
- 
 
 };
+console.log(user);
+
+useEffect(() => {
+  // Fetch career plans based on user's skills
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/careerPlanRecommendation", {
+        companyGoals: ["html"],
+        userSkills: user.skills.map((skill) => skill.name), 
+      });
+
+      setCareerPlans(response.data);
+      console.log(careerPlans);
+    } catch (error) {
+      console.error("Error fetching career plans: ", error);
+    }
+  };
+
+  fetchData(); 
+}, [user]); 
 
 
 useEffect(() => {
+  
   formations.forEach(async formation => {
     const isDisabled = await checkButtonStatus(formations.id);
     formation.disabled = isDisabled;
@@ -184,18 +155,15 @@ const checkButtonStatus = async (formationId) => {
   }
 };
 
-const userr = JSON.parse(localStorage.getItem("user"));
-
 useEffect(() => {
-  
-    if (userr) {
-      navigate("/dashboard/profile", { replace: true });
-    } else if (!userr) {
-      navigate("/authentication/sign-in", { replace: true });
-    } 
+ if (!userr) {
+    navigate("/authentication/sign-in", { replace: true }); 
+  }
+
 
   getUser();
-}, [id,navigate]);
+
+}, [id,Navigate]);
 
 
   if (!user) return null;
@@ -206,29 +174,31 @@ useEffect(() => {
     lastName,
     email,
     phone,
-    
-    skills,
-    profilePicture
+
   } = user;
+
+
 
 
 
   const hasEmployeeRole = roles.some(role => role.name === "employee");
 
-
-
-  function handleDetails (Id) {
-    // Navigate to the user details page for the specified user ID
-    window.location.href = `/dashboard/skills/${Id}`;
-  }
-
   
 
-  return (
+  return  (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mb={2} />
+
+
       <Header>
+
+
+
+
+
+
+
+      <MDBox mb={2} />
         <MDBox mt={5} mb={3}>
           
           <Grid container spacing={1}>
@@ -241,7 +211,7 @@ useEffect(() => {
               <ProfileInfoCard
                 title="profile information"
                 description= ""
-                user={user} // Pass the user data as a prop
+                user={user}
 
                 info={{
                   fullName: firstName,
@@ -257,74 +227,40 @@ useEffect(() => {
     
                         ))}
                       </ul>
-                      <Link onClick={() => handleDetails(user._id)} style={{ color: "blue" }}>
-                     see more
-                    </Link>
+                      
+                      <Link to={`/dashboard/skills/${user._id}`} style={{ color: "blue" }}>
+                       see more
+                      </Link>
                     </div>
-
                   ),
-
-                  // careerPlan:
-                  //  user.careerPlan || null
-                  
                 }}
                            
                 social={[
                
                   {
-                    link: `${linkedinlink}`,
+                    link: "https://linkedin.com/",
                     icon: <LinkedIn />,
-                    color: "linkedin",
+                    color: "twitter",
                   },
                   {
-                    link: `${githublink}`,
+                    link: "https://www.instagram.com/creativetimofficial/",
                     icon: <GitHub />,
                     color: "instagram",
                   },
                 ]}
+              
                 action={{ route: "", tooltip: "Edit Profile" }}
-                handleOpen={handleOpen}
 
                 shadow={false}
                 
-              />
-              
-
-          
+              />             
             </Grid>
-          
-
           </Grid>
-
-
-          <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-            careerPlan:
-            </MDTypography>
-            <MDTypography variant="button" color="text"  fontWeight="medium" style={{with:"50px"}}>
-
-            {user.careerPlan} 
-              </MDTypography>
-
-          <ProfileModal
-          profilePicture={profilePicture}
-        open={open}
-        handleClose={handleClose}
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        phone={phone}
-        profileInformation={profileInformation}
-        setProfileInformation={setProfileInformation}
-        diplome={diplome}
-        linkedinlink={linkedinlink}
-        setlinkedinlink={setlinkedinlink}
-        setgithublink={setgithublink}
-        githublink={githublink}
-        setDiplome={setDiplome}
-        handleSave={handleSave}
-      />
-      
+       
         </MDBox>
+       
+       
+        
         <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             My trainings
@@ -334,25 +270,16 @@ useEffect(() => {
         <MDBox p={2}>
             <Grid container spacing={6}>
 
-            {/* <MDTypography variant="h6" fontWeight="medium">
-  {user.skills.map(skill => (
-    <div key={skill.name}>
-      <span>{skill.name}</span>
-      <span>{skill.status}</span>
-    </div>
-  ))}
-</MDTypography> */}
-
             {formations.map((formation,index) => {
              
               return (
-                <Grid item xs={12} md={6} xl={3} key={formation.formation?._id}>
+                <Grid item xs={12} md={6} xl={3} key={formation.formation._id}>
                   <DefaultProjectCard
-                    image={formation.formation?.image}
-                    label={formation.formation?.label}
-                    title={formation.formation?.title}
-                    desc={formation.formation?.desc}
-                    badge={formation?.valid}
+                    image={formation.formation.image}
+                    label={formation.formation.label}
+                    title={formation.formation.title}
+                    desc={formation.formation.desc}
+                    badge={formation.valid}
                     action={{
                       type: 'internal',
                       route: "",
@@ -366,7 +293,7 @@ useEffect(() => {
                  color="info"
                  type="external"
       onClick={() => {
-        const formationLink = formations[index].formation?.link;
+        const formationLink = formations[index].formation.link;
         downloadFormation(formationLink, index);
 
       }}
@@ -374,7 +301,7 @@ useEffect(() => {
                  Start Course
                </MDButton>
 
-               <Link to={`/quiz/${formation.formation?._id}`}>
+               <Link to={`/quiz/${formation.formation._id}`}>
               
     <MDButton
       variant="outlined"
@@ -397,12 +324,34 @@ useEffect(() => {
           </Grid>
         
         </MDBox>
+         <Card id="delete-account">
+      <MDBox pt={3} px={2}>
+        <MDTypography variant="h6" fontWeight="medium">
+         Career Plan Recomandations
+        </MDTypography>
+      </MDBox>
+   
+      <MDBox pt={1} pb={2} px={2}>
+         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+         {careerPlans.map((plan, index) => (
+   <Bill
+   key={index}
+   careerPlan={plan.title}
+  userId={id}
+  
+  
+  />
+))}
+          
         
-      </Header>
-      
+          
+        </MDBox>
+      </MDBox>
+    </Card>
+    </Header>
       <Footer />
     </DashboardLayout>
-  );
+  )
 }
 
 export default Overview;

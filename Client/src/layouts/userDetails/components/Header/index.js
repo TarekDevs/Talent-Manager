@@ -37,7 +37,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -67,7 +67,7 @@ function Header({ children }) {
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
-  const id = localStorage.getItem('userId');
+  const { id } = useParams();
 
 
   const [user,setUser]= useState(null);
@@ -143,7 +143,6 @@ const{
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-          
           </Grid>
         </Grid>
         {children}

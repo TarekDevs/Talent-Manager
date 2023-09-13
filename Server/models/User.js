@@ -58,10 +58,18 @@ const userSchema = new mongoose.Schema(
     ],
 
 
-    
+ 
+
+  careerPlan: 
+{
+ type: String 
+ 
+},
   
 
     profilePicture: { type: String },
+    isAdmin: { Boolean, },
+
     ProfileInformation: { type: String },
     location: { type: String },
     cv: { type: String },
@@ -90,6 +98,8 @@ const userSchema = new mongoose.Schema(
         type: String,
   
       },
+
+      
     ],
 
     linkedinlink: { type: String },

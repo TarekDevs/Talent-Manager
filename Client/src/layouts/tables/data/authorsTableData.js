@@ -35,14 +35,16 @@ import team4 from "assets/images/team-4.jpg";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import FormationList from "./FormationList";
+import {  useParams } from "react-router-dom";
 
 export default function data() {
 
 
-  const id = localStorage.getItem('userId');
+  const { id } = useParams(); // Extract the "id" parameter from route params
   const [user, setUser] = useState({});
   const [skills, setSkills] = useState([]);
   const [row, setRows] = useState([]); // Define the state variable
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -51,6 +53,8 @@ export default function data() {
         const data = await response.json();
         setUser(data);
         setSkills(data.skills);
+        setRoles(data.Roles);
+
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -59,21 +63,26 @@ export default function data() {
     getUser();
   }, [id]);
 
+  const hasEmployeeRole = roles.some(role => role.name === "employee");
 
   const handleFormationSelect = async (skillIndex, formationId, formationTitle) => {
     try {
+      // Update the formation information for the specific skill
       await axios.put(`http://localhost:8000/api/formation/addFormationId/${id}`, {
         skillIndex: skillIndex,
         formationId: formationId,
       });
   
+      // Update the user's formation data
       await axios.put(`http://localhost:8000/api/formation/postformation/${id}`, {
         formationIds: [formationId],
       });
   
-      const updatedSkills = [...skills];
-      updatedSkills[skillIndex].formationId = { title: formationTitle, valid: true };
-      setSkills(updatedSkills); 
+      const updatedUserDataResponse = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+      const updatedUserData = await updatedUserDataResponse.json();
+  
+      setSkills(updatedUserData.skills);
+  
     } catch (error) {
       console.error("Error adding formation:", error);
     }
@@ -166,16 +175,20 @@ const data = skills.map((skill, index) => ({
       skillId={skill._id}
     />
   ),
-  formation: (
-    <FormationList
-    initialSelectedFormationTitle={skill.formationTitle}
-    onSelectFormation={(skillIndex, formationId, formationTitle) =>
-      handleFormationSelect(skillIndex, formationId, formationTitle)
-    }
-    handleFormationSelect={handleFormationSelect}
-  />
   
+  formation: (
+      <FormationList
+        initialSelectedFormationTitle={skill.formationTitle}
+        onSelectFormation={(skillIndex, formationId, formationTitle) =>
+          handleFormationSelect(skillIndex, formationId, formationTitle)
+        }
+        handleFormationSelect={handleFormationSelect}
+        readOnly={hasEmployeeRole} // Set readOnly based on the user's role
+
+      />
+    
   ),
+  
   formationTitle: skill.formationId?.title,
   formationstatus: (
     <div>

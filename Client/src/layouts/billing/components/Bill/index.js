@@ -28,8 +28,9 @@ import { useState ,useEffect} from "react";
 import { useMaterialUIController } from "context";
 import "./bill.css"
 import styles from './bill.css'; // Import the CSS module
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import axios from "axios"; 
+import { useNavigate } from "react-router-dom";
 
 function Bill({  }) {
   const [controller] = useMaterialUIController();
@@ -41,6 +42,13 @@ function Bill({  }) {
   const formationId = location.pathname.split('/').pop(); // Extract the formation ID from the URL path
   const [timer, setTimer] = useState(30); // Initial timer value in seconds
   const [timerRunning, setTimerRunning] = useState(true);
+
+
+
+  const navigate = useNavigate();
+  
+
+
   const questions = [
 		{
 			questionText: "when using the portal, what is the second argument?: ReactDom.CreatePortal(x,y)" ,
@@ -88,8 +96,14 @@ function Bill({  }) {
 
   const [formationUpdated, setFormationUpdated] = useState(false);
   const [user,setUser]= useState(null);  
+  const userr = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    if (userr) {
+      navigate("/quiz/64dbfdf72b4cd0c3dd04ab92", { replace: true });
+    } else if (!userr) {
+      navigate("/authentication/sign-in", { replace: true });
+    }
     let interval;
 
     if (timerRunning && timer > 0) {
@@ -106,7 +120,9 @@ function Bill({  }) {
     return () => {
       clearInterval(interval);
     };
-  }, [timer, timerRunning]);
+
+    
+  }, [timer, timerRunning,Navigate]);
 
 	
   const handleAnswerOptionClick = (isCorrect) => {

@@ -1,18 +1,7 @@
 import React from 'react'
 // @mui material components
 import Grid from "@mui/material/Grid";
-import Divider from "@mui/material/Divider";
-import Modal from "@mui/material/Modal";
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import { AvatarGroup } from "@mui/material";
 import Avatar from '@material-ui/core/Avatar';
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import InstagramIcon from "@mui/icons-material/Instagram";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -25,34 +14,33 @@ import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 // Overview page components
 import Header from "layouts/formation/components/Header";
 import axios from 'axios';
+
 import RatingComponent from './components/RatingComponent';
 // Data
-import profilesListData from "layouts/formation/data/profilesListData";
 
-// Images
-import homeDecor1 from "assets/images/dojbxblb9ibp0fwfraap.webp";
-import homeDecor2 from "assets/images/Nodejs-banner.jpeg";
-import homeDecor3 from "assets/images/angular-core-in-depth-small.png";
-import homeDecor4 from "assets/images/2842536_694c.jpg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
 import { useState,useEffect } from "react";
-import {
-  TextField,
-  Button,
-} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import { Notfound } from 'layouts/Notfound/Notfound';
 
  const Formation = () => {
   const [formation,setFormations]= useState(null);  
+
   const id = localStorage.getItem('userId');
 
- 
+  const [roles, setRoles] = useState([]);
+
+  const navigate = useNavigate();
+
+  
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  
+
 
   const getFormations = async () => {
     try {
@@ -71,6 +59,13 @@ import {
 
   
 
+  const LoadingSpinner = () => {
+    return (
+      <div className="loading-spinner">
+      </div>
+    );
+  };
+  
 
 
 const handleAddFormations = async (formationId) => {
@@ -129,8 +124,35 @@ const handleRateFormation = async (formationId, rating) => {
   }
 };
 
+const hasEmployeeRole = roles.some(role => role.name === "employee");
 
-  return (
+useEffect(() => {
+  const getUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+      const data = await response.json();
+      setRoles(data.Roles);
+
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+
+      if (user) {
+        navigate("/dashboard/formation", { replace: true });
+      } else if (!user) {
+        navigate("/authentication/sign-in", { replace: true });
+      }
+  };
+
+  getUser();
+}, [id,Navigate]);
+
+if (!formation) {
+  return <LoadingSpinner />;
+}
+
+return hasEmployeeRole ? (
 
     <DashboardLayout>
       <DashboardNavbar />
@@ -222,7 +244,11 @@ const handleRateFormation = async (formationId, rating) => {
         </MDBox>
       </Header>
       <Footer />
-    </DashboardLayout>    )
+    </DashboardLayout>    
+    ) : (
+
+      <Notfound/>
+    );
 }
 
 export default Formation
