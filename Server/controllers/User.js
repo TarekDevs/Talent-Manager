@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Formation=require('../models/Formation')
 const mongoose = require('mongoose');
-
+const Role =require('../models/role')
 exports.getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -228,3 +228,27 @@ exports.getAllUsers = async (req, res) => {
       return res.status(500).json({ message: "An error occurred while updating the career plan" });
     }
   };
+
+
+  exports.getUsersByRole = async (req, res) => {
+    try {
+      // Find the role document with the name "employee"
+      const role = await Role.findOne({name:"employee"});
+  
+      if (!role) {
+        return res.status(404).json({ message: "Role not found" });
+      }
+  console.log(role);
+  const users = await User.find({ Roles: role._id });
+  
+  if (!users || users.length === 0) {
+    return res.status(404).json({ message: "No users with the specified role found" });
+  }
+  
+  
+      res.status(200).json(users);
+    } catch (eror) {
+      console.log("Error");
+    }
+  }
+

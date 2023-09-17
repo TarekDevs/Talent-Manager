@@ -27,10 +27,11 @@ function Tables() {
       </div>
     );
   };
+
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/users/getallusers');
+        const response = await axios.get("http://localhost:8000/api/users/byrole");
         setUsers(response.data);
 
       } catch (error) {
@@ -47,6 +48,9 @@ function Tables() {
   }, [navigate]);
 
   
+
+
+  // pour extraire le role
 
   const getUserr = async() => {
     const response = await fetch (`http://localhost:8000/api/users/getuser/${id}`, {
