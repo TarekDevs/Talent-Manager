@@ -40,12 +40,12 @@ import {  useParams } from "react-router-dom";
 export default function data() {
 
 
-  const { id } = useParams(); // Extract the "id" parameter from route params
+  const { id } = useParams(); 
   const [user, setUser] = useState({});
   const [skills, setSkills] = useState([]);
-  const [row, setRows] = useState([]); // Define the state variable
+  const [row, setRows] = useState([]); 
   const [roles, setRoles] = useState([]);
-
+  const idd = localStorage.getItem('userId');
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -53,7 +53,9 @@ export default function data() {
         const data = await response.json();
         setUser(data);
         setSkills(data.skills);
-        setRoles(data.Roles);
+        const anotherResponse = await fetch(`http://localhost:8000/api/users/getuser/${idd}`);
+        const anotherData = await anotherResponse.json();
+        setRoles(anotherData.Roles);
 
       } catch (error) {
         console.error('Error fetching user data:', error);
