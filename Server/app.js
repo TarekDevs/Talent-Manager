@@ -8,13 +8,44 @@ const passport = require("passport");
 const morgan = require('morgan')
 const path = require('path');
 const { spawn } = require('child_process');
-
+const cron = require('node-cron');
 const Role = require("./models/role");
 
 // import routes
 const authroute = require('./routes/auth');
 const userroute= require('./routes/user')
 const formationroute= require('./routes/formation')
+
+
+
+
+
+
+const runWebScraping = () => {
+  // Path to the Python script for web scraping (change 'index.py' to your actual script name)
+  const webScrapingScriptPath = path.join(__dirname, 'index.py');
+
+  // Path to the Python interpreter
+  const pythonInterpreter = path.join(__dirname, 'venv', 'Scripts', 'python.exe');
+
+  // Call the Python script
+  const pyWebScrapingProg = spawn(pythonInterpreter, [webScrapingScriptPath]);
+
+  // Handle script output
+  pyWebScrapingProg.stdout.on('data', (data) => {
+    console.log(`Web Scraping Script Output: ${data}`);
+  });
+
+  // Handle errors
+  pyWebScrapingProg.stderr.on('data', (data) => {
+    console.error(`Error in Web Scraping Script: ${data}`);
+  });
+};
+
+cron.schedule('0 0 * * *', () => {
+  console.log('Running Web Scraping Script');
+  runWebScraping();
+});
 
 const connect = async () => {
     try {

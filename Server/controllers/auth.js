@@ -6,7 +6,6 @@ const pdfjsLib = require('pdfjs-dist');
 const pdfParse = require('pdf-parse'); // Import the pdf-parse library
 const skillsKeywords = ['languges'];
 const mongoose = require("mongoose");
-
 exports.register = async (req, res) => {
   try {
     const salt = bcrypt.genSaltSync(10);
@@ -23,19 +22,18 @@ exports.register = async (req, res) => {
 
     if (skillsSectionStart) {
       // Extract the first 200 words from the CV text
-      const maxWords = 200;
+      const maxWords = 100;
       const cvText = textContent.split(/\s+/).slice(0, maxWords).join(' ');
 
       const startIndex = cvText.indexOf(skillsSectionStart);
       const endIndex = cvText.indexOf('Langues', startIndex); // Assuming 'Langues' indicates the end of skills section
       const skillsText = cvText.slice(startIndex, endIndex);
 
-      // Split skillsText into lines
-      const lines = skillsText.split('\n');
+      // Split skillsText into lines ending with a period (.)
+      const lines = skillsText.split(/\.\s*/).map(line => line.trim());
 
       // Filter out empty lines and keywords
       skillsArray = lines
-        .map(line => line.trim())
         .filter(line => line && !skillsKeywords.includes(line))
         .map(skillLine => {
           const [name, status] = skillLine.split('('); // Split by '(' to get name and status
@@ -47,10 +45,7 @@ exports.register = async (req, res) => {
 
     console.log(skillsArray);
 
-    
- 
     const extractedExperiences = [];
-
 
     // Define keywords that indicate experience or project sections
     const experienceKeywords = ['Stage', 'Projet', 'Experience', 'Project', 'Intership'];
@@ -58,7 +53,9 @@ exports.register = async (req, res) => {
     const experiencesSectionIndex = textContent.search(new RegExp(experienceKeywords.join('|'), 'i'));
     if (experiencesSectionIndex !== -1) {
       const experiencesText = textContent.slice(experiencesSectionIndex);
-      const lines = experiencesText.split('\n');
+
+      // Split experiencesText into lines ending with a period (.)
+      const lines = experiencesText.split(/\.\s*/).map(line => line.trim());
 
       let currentExperience = '';
 
@@ -85,7 +82,6 @@ exports.register = async (req, res) => {
     const roleId = req.body.roleId // Replace with the actual role ID
     const roleObjectId = new mongoose.Types.ObjectId(roleId);
 
-
     const role = await Role.findById(roleId); // Find the role by its ID
 
     if (!role) {
@@ -95,7 +91,6 @@ exports.register = async (req, res) => {
       });
     }
 
-    
     const newuser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -104,13 +99,11 @@ exports.register = async (req, res) => {
       password: hash,
       cv: req.file.path,
       skills: skillsArray, // Save the skills array
-      profilePicture:req.body.profilePicture,
+      profilePicture: req.body.profilePicture,
       experiences: extractedExperiences,
       Roles: [], // Initialize an empty array for roles
-
     });
     newuser.Roles.push(roleObjectId);
-
 
     const userExists = await User.findOne({ email: req.body.email });
 

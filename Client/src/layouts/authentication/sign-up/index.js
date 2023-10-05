@@ -45,8 +45,8 @@ function Cover() {
       email: '',
       phone: '',
       password: '',
-      file: null, // Assuming you are using this to upload CV
-      profilePicture: null, // Profile picture file
+      file: null, 
+      profilePicture: null, 
       isHR: false, 
     isEmployee: false, 
     });
@@ -54,14 +54,21 @@ function Cover() {
 
     const handleInputChange = (event) => {
       const { name, value, type, checked } = event.target;
-  
-      if (name === 'isHR') {
-        setFormData({ isHR: checked, isEmployee: !checked });
-      } else if (name === 'isEmployee') {
-        setFormData({ isHR: !checked, isEmployee: checked });
+    
+      // For non-checkbox inputs
+      if (type !== 'checkbox') {
+        setFormData({ ...formData, [name]: value });
+      } else {
+        // For checkboxes
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: checked,
+          // If 'isHR' is checked, set 'isEmployee' to false, and vice versa
+          isEmployee: name === 'isHR' ? !checked : prevFormData.isEmployee,
+        }));
       }
     };
-
+    
   const handleFileChange = (event) => {
     setFormData({ ...formData, file: event.target.files[0] });
   };
@@ -239,10 +246,10 @@ function Cover() {
     style={{ marginLeft: '10px' }} 
   />
 </div>
-
-<MDBox mb={2} style={{marginTop:'20px'}}>
+<MDBox mb={2} style={{ marginTop: '20px' }}>
+  
   <Checkbox
-    name="isAdmin"
+    name="isHR"
     checked={formData.isHR}
     onChange={handleInputChange}
   />
@@ -262,7 +269,7 @@ function Cover() {
     name="isEmployee"
     checked={formData.isEmployee}
     onChange={handleInputChange}
-    style={{marginLeft:"90px"}}
+    style={{ marginLeft: "90px" }}
   />
   <MDTypography
     variant="button"
@@ -276,7 +283,8 @@ function Cover() {
   >
     Register as Employee
   </MDTypography>
-        </MDBox>
+</MDBox>
+
           <MDBox mt={4} mb={1}>
             <MDButton type="submit" variant="gradient" color="info" fullWidth>
               Sign Up

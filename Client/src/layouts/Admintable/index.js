@@ -17,6 +17,7 @@ function Tables() {
   const [data, setData] = useState([]);
   const [banDate, setBanDate] = useState(null);
   const [users, setUsers] = useState([]);
+  
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
@@ -49,7 +50,6 @@ function Tables() {
   
     const data = await response.json();
     setRoles(data.Roles);
-  
    
   
   };
@@ -61,18 +61,25 @@ const hasEmployeeRole = roles.some(role => role.name === "admin");
 
 const handleBan = async (userID) => {
   await axios.put("http://localhost:8000/api/users/banuser", { userID, banDate: formattedBanDate });
-  setUser((prevUser) => ({
-    ...prevUser,
-    isBanned: new Date(banDate)
-  }));
-};
+  const updatedUsers = users.map((user) => {
 
+    if (user._id === userID) {
+      user.isBanned = new Date(banDate);
+    }
+    return user;
+  });
+  setUsers(updatedUsers);
+};
+ 
 const handleUnban = async (userID) => {
   await axios.put("http://localhost:8000/api/users/unbanuser", { userID });
-  setUser((prevUser) => ({
-    ...prevUser,
-    isBanned: null
-  }));
+  const updatedUsers = users.map((user) => {
+    if (user._id === userID) {
+      return { ...user, isBanned: null };
+    }
+    return user;
+  });
+  setUsers(updatedUsers);
 };
 
   useEffect(() => {

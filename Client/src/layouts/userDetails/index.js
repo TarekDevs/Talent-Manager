@@ -57,6 +57,7 @@ function Overview() {
   const [diplome, setDiplome] = useState("");
   const [careerPlans, setCareerPlans] = useState([]);
   const [formations, setFormations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const userr = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
@@ -129,11 +130,15 @@ useEffect(() => {
       console.log(careerPlans);
     } catch (error) {
       console.error("Error fetching career plans: ", error);
-    }
+    
+  } finally {
+   setLoading(false);
+  }
   };
-
-  fetchData(); 
-}, [user]); 
+  if (user) {
+    fetchData();
+  }
+}, [user]);
 
 
 useEffect(() => {
@@ -332,22 +337,17 @@ useEffect(() => {
       </MDBox>
    
       <MDBox pt={1} pb={2} px={2}>
-         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-        
-         {careerPlans.map((plan, index) => (
-   <Bill
-   key={index}
-   careerPlan={plan.title}
-  userId={id}
-  
-  
-  />
-))}
-          
-        
-          
-        </MDBox>
+      {loading ? (
+       
+              <div>Loading career plans...</div>
+      ) : (
+        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+        {careerPlans.map((plan, index) => (
+          <Bill key={index} careerPlan={plan.title} userId={id} />
+        ))}
       </MDBox>
+    )}
+  </MDBox>
     </Card>
     </Header>
       <Footer />
