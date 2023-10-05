@@ -1,42 +1,74 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
+// Import necessary components and modules
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-
-// Data
+import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
+import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
+import { Grid, Card } from "@mui/material";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import PropTypes from "prop-types";
+import axios from "axios";
+import { Notfound } from "layouts/Notfound/Notfound";
+import { useNavigate, useParams } from "react-router-dom";
 
+// Your Tables component
 function Tables() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
 
-  return (
-    <DashboardLayout>
+
+const { id } = useParams(); // Extract the "id" parameter from route params
+const [formations, setFormations] = useState([]); 
+const navigate = useNavigate();
+const user = JSON.parse(localStorage.getItem("user"));
+
+
+
+
+
+
+
+useEffect(() => {
+  const getUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+      const data = await response.json();
+      // setRoles(data.Roles);
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+
+    if (!user) {
+      navigate("/authentication/sign-in", { replace: true });
+    }
+  };
+
+  getUser();
+}, [id,navigate]);
+
+
+useEffect(() => {
+  async function fetchFormations() {
+    try {
+      const response = await axios.get("http://localhost:8000/api/formation/getallform");
+      const data = response.data;
+      setFormations(data);
+    } catch (error) {
+      console.error("Error fetching formations:", error);
+    }
+  }
+
+  fetchFormations();
+}, []);
+
+const {columns,rows}=authorsTableData()
+
+return  (
+  <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
@@ -53,44 +85,22 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  User Skills Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Projects Table
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns: pColumns, rows: pRows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+              <DataTable
+      table={{
+        columns: columns.map((column) => ({
+          Header: column.name,
+          accessor: column.selector,
+          sortable: column.sortable,
+        })),
+        rows: rows.map((row, index) => ({
+          ...row,
+          })),
+        }}
+      />
               </MDBox>
             </Card>
           </Grid>
@@ -98,7 +108,8 @@ function Tables() {
       </MDBox>
       <Footer />
     </DashboardLayout>
-  );
+ 
+);
 }
 
 export default Tables;

@@ -41,17 +41,15 @@ import MDTypography from "components/MDTypography";
 
 // ReportsBarChart configurations
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
-
+import FormationStatistics from "layouts/dashboard/components/FormationStatistics";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function ReportsBarChart({ color, title, description, date, chart }) {
-  const { data, options } = configs(chart.labels || [], chart.datasets || {});
+function ReportsBarChart({ color, title, description, date }) {
 
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox padding="1rem">
-        {useMemo(
-          () => (
+        
             <MDBox
               variant="gradient"
               bgColor={color}
@@ -60,13 +58,11 @@ function ReportsBarChart({ color, title, description, date, chart }) {
               py={2}
               pr={0.5}
               mt={-5}
-              height="12.5rem"
+              height="15.5rem"
             >
-              <Bar data={data} options={options} redraw />
+              <FormationStatistics/>
             </MDBox>
-          ),
-          [color, chart]
-        )}
+        
         <MDBox pt={3} pb={1} px={1}>
           <MDTypography variant="h6" textTransform="capitalize">
             {title}

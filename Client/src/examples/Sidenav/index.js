@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import { useEffect ,useState} from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -84,10 +84,33 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
-    let returnValue;
+  const [roles, setRoles] = useState([]);
+  const id = localStorage.getItem('userId');
+  const [userRoles, setUserRoles] = useState([]); // Define userRoles here
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+        const data = await response.json();
+        
+        // Extract user roles and set them in userRoles state
+        const extractedRoles = data.Roles || [];
+        setUserRoles(extractedRoles);
+  
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    
 
-    if (type === "collapse") {
+    getUser();
+  }, [id]);
+
+  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route, rolee,e }) => {
+    let returnValue;
+  
+    if (type === "collapse" ) {
+      if (userRoles.some(role => role.name === rolee)  || e==="both" ){
       returnValue = href ? (
         <Link
           href={href}
@@ -104,11 +127,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           />
         </Link>
       ) : (
+      
+
         <NavLink key={key} to={route}>
           <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
         </NavLink>
       );
-    } else if (type === "title") {
+    }
+     else if (type === "title") {
       returnValue = (
         <MDTypography
           key={key}
@@ -138,7 +164,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     }
 
     return returnValue;
-  });
+  }});
 
   return (
     <SidenavRoot
@@ -179,19 +205,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      <MDBox p={2} mt="auto">
-        <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
-          variant="gradient"
-          color={sidenavColor}
-          fullWidth
-        >
-          upgrade to pro
-        </MDButton>
-      </MDBox>
     </SidenavRoot>
   );
 }

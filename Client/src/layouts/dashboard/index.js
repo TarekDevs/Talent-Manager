@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-
+import CombinedChart from "../../layouts/dashboard/components/mostauthors"
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 
@@ -24,26 +24,63 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
+import ReportsBarChartt from "examples/Charts/BarCharts/ReportsBarChartt";
+
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
+import Reportspiechart from "examples/Charts/Reportspiechart"
+import BestRatedFormation from "./components/BestRatedFormation";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-
+import FormationStatistics from "./components/FormationStatistics";
+import { line } from "stylis";
+import { useState,useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const id = localStorage.getItem('userId');
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const navigate = useNavigate();
+
+
+  
+  const [roles, setRoles] = useState([]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/getuser/${id}`);
+        const data = await response.json();
+        setRoles(data.Roles);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+      if (user) {
+        navigate("/dashboard", { replace: true });
+      } else if (!user) {
+        navigate("/authentication/sign-in", { replace: true });
+      }
+    };
+
+    getUser();
+  }, [id,Navigate]);
+
+  const hasEmployeeRole = roles.some(role => role.name === "employee");
+
+  
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
@@ -57,8 +94,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
@@ -71,8 +108,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
@@ -86,8 +123,8 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
@@ -101,37 +138,55 @@ function Dashboard() {
                 }}
               />
             </MDBox>
-          </Grid>
+          </Grid> */}
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{marginRight:"10px"}}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  title="Valid formations "
+                  description="Valid formations per month "
+                  date=" sent 2 days ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
             </Grid>
+
+            
+
+            {hasEmployeeRole && (
+
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+              <Reportspiechart
+               color="info"
+              title="Skill's Status"
+    description={<>Percentage of skills for each status</>}
+    date="updated 4 min ago"
+  />
+
+
+              </MDBox>
+            </Grid>)}
+            
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <CombinedChart
+                
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+
+             <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <BestRatedFormation
+                
+                />
+              </MDBox>
+            </Grid> 
+            {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
@@ -141,17 +196,18 @@ function Dashboard() {
                   chart={tasks}
                 />
               </MDBox>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+          {!hasEmployeeRole && (
+            <Grid item xs={12} md={6} lg={8}  style={{marginLeft:"220px"}}>
               <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            </Grid>)}
+            {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>
