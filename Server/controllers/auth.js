@@ -79,18 +79,15 @@ exports.register = async (req, res) => {
       console.log(extractedExperiences);
     }
 
-    const roleId = req.body.roleId // Replace with the actual role ID
-    const roleObjectId = new mongoose.Types.ObjectId(roleId);
+   const roleName = req.body.role; 
+const role = await Role.findOne({ name: roleName });
 
-    const role = await Role.findById(roleId); // Find the role by its ID
-
-    if (!role) {
-      return res.status(404).json({
-        success: false,
-        message: "Role not found",
-      });
-    }
-
+if (!role) {
+  return res.status(404).json({
+    success: false,
+    message: "Role not found",
+  });
+}
     const newuser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -103,7 +100,7 @@ exports.register = async (req, res) => {
       experiences: extractedExperiences,
       Roles: [], // Initialize an empty array for roles
     });
-    newuser.Roles.push(roleObjectId);
+      newuser.Roles.push(role);
 
     const userExists = await User.findOne({ email: req.body.email });
 
