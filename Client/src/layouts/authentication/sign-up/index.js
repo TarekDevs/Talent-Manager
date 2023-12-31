@@ -84,18 +84,18 @@ function Cover() {
   
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dxououehj/upload';
     const cloudinaryPreset = 'siwarse'; // Your Cloudinary preset
-
+  
     const formDataToSend = new FormData();
     formDataToSend.append('file', formData.profilePicture);
     formDataToSend.append('upload_preset', cloudinaryPreset);
-
+  
     try {
       const cloudinaryResponse = await axios.post(cloudinaryUrl, formDataToSend);
       const profilePictureUrl = cloudinaryResponse.data.secure_url;
-
+  
       // Your existing form data
       const userFormData = new FormData();
       userFormData.append('firstName', formData.firstName);
@@ -105,22 +105,19 @@ function Cover() {
       userFormData.append('password', formData.password);
       userFormData.append('file', formData.file);
       userFormData.append('profilePicture', profilePictureUrl); // Use the Cloudinary URL
-
+  
       if (formData.isHR) {
-        userFormData.append('roleId', '64ca9bda320ef3d3bb184e1f');
+        userFormData.append('role', 'HR'); 
       }
-
-      // Check if Employee checkbox is checked and add Employee roleId if true
+  
+      // Check if Employee checkbox is checked and add Employee role if true
       if (formData.isEmployee) {
-        userFormData.append('roleId', '64ca9bda320ef3d3bb184e20');
+        userFormData.append('role', 'employee'); 
       }
-
-      
-
-
+  
       const url = 'http://localhost:8000/api/auth/';
       const response = await axios.post(url, userFormData);
-
+  
       if (response.status === 200) {
         alert('Signed up successfully!');
       } else {
@@ -130,6 +127,7 @@ function Cover() {
       console.error('Error during registration:', error.message);
     }
   };
+
 
 
 
